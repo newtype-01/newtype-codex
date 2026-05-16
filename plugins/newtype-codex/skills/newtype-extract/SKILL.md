@@ -3,7 +3,7 @@ name: newtype-extract
 description: Use to extract clean, structured content from PDFs, images, documents, screenshots, web pages, tables, and other source material.
 ---
 
-# Newtype Extract
+# newtype Extract
 
 Use this skill when the user needs content extracted or converted into clean Markdown or structured data.
 

@@ -1,13 +1,13 @@
-# Newtype for Codex Plugin
+# newtype for Codex Plugin
 
-这是 Codex plugin 根目录。插件本体提供 Newtype skills；自定义 agents 通过 `templates/agents/` 和 `scripts/install-agents.ts` 安装。
+这是 Codex plugin 根目录。插件本体提供 newtype skills；自定义 agents 通过 `templates/agents/` 和 `scripts/install-agents.ts` 安装。
 
 ## Included
 
-- `skills/`：Newtype Chief、Research、Fact Check、Write、Edit、Extract、Archive、Workbench。
+- `skills/`：newtype Chief、Research、Fact Check、Write、Edit、Extract、Archive、Workbench。
 - `templates/agents/`：对应的 Codex custom agent TOML 模板。
 - `scripts/install-agents.ts`：把 agent 模板写入 `.codex/agents/` 或 `~/.codex/agents/`。
-- `references/newtype-agent-workflow.md`：Newtype 工作流和模型选择说明。
+- `references/newtype-agent-workflow.md`：newtype 工作流和模型选择说明。
 
 ## Install agents
 

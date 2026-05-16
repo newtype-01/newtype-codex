@@ -2,7 +2,7 @@
   <strong>English</strong> | <a href="./README.zh-cn.md">简体中文</a>
 </p>
 
-# Newtype for Codex
+# newtype for Codex
 
 **Multi-Agent Content Team — the Codex plugin edition of newtype OS**
 
@@ -12,7 +12,7 @@ Created by [huangyihe](https://x.com/huangyihe).
 
 ## What is this
 
-Newtype for Codex packages the core newtype OS content workflow as a Codex plugin.
+newtype for Codex packages the core newtype OS content workflow as a Codex plugin.
 
 At its core, newtype OS is an **8-agent multi-layer orchestration system** built for content production. Think of it as **a content team living inside your AI coding environment**. Chief talks to you and coordinates the work; specialist agents handle research, fact-checking, retrieval, extraction, writing, and editing.
 
@@ -22,7 +22,7 @@ You ↔ Chief (Editor-in-Chief)
       Researcher · Fact-Checker · Archivist · Extractor · Writer · Editor · Workbench
 ```
 
-This repository is the **Codex plugin edition**. It keeps the Newtype content-team workflow, but uses Codex-native primitives:
+This repository is the **Codex plugin edition**. It keeps the newtype content-team workflow, but uses Codex-native primitives:
 
 - Codex plugins for distribution.
 - Codex skills for reusable workflow instructions.
@@ -33,7 +33,7 @@ It intentionally leaves out OpenCode-specific integration such as the OpenCode T
 
 ## Comparison
 
-|                 | Newtype for Codex            | @newtype-os/cli                  | @newtype-os/plugin           |
+|                 | newtype for Codex            | @newtype-os/cli                  | @newtype-os/plugin           |
 | --------------- | ---------------------------- | -------------------------------- | ---------------------------- |
 | **Nature**      | Codex plugin + agent templates | Standalone terminal app          | OpenCode plugin              |
 | **Install**     | `codex plugin marketplace add` | `npm install -g @newtype-os/cli` | `bun add @newtype-os/plugin` |
@@ -46,9 +46,9 @@ It intentionally leaves out OpenCode-specific integration such as the OpenCode T
 
 `@newtype-os/cli` is the full integrated product. It embeds OpenCode as its engine, ships as the `nt` terminal app, includes the TUI, provider connection flow, CLI commands, memory system, MCP integrations, and WeChat bridge.
 
-`@newtype-os/plugin` is the OpenCode plugin edition. It adds the Newtype agent team to an existing OpenCode installation.
+`@newtype-os/plugin` is the OpenCode plugin edition. It adds the newtype agent team to an existing OpenCode installation.
 
-Newtype for Codex is narrower by design. Codex plugins can distribute skills, but custom subagents are still `.codex/agents/*.toml` files. This repository therefore ships both: the plugin installs Newtype skills, and the included installer writes Newtype custom agent templates into Codex config.
+newtype for Codex is narrower by design. Codex plugins can distribute skills, but custom subagents are still `.codex/agents/*.toml` files. This repository therefore ships both: the plugin installs newtype skills, and the included installer writes newtype custom agent templates into Codex config.
 
 ## Installation
 
@@ -58,20 +58,20 @@ Add this repository as a Codex marketplace:
 codex plugin marketplace add newtype-01/newtype-codex
 ```
 
-Then open `/plugins` in Codex and install **Newtype for Codex**.
+Then open `/plugins` in Codex and install **newtype for Codex**.
 
 After installation, Codex can use these skills:
 
 | Skill | Use when |
 | --- | --- |
-| `newtype-chief` | Main Newtype workflow, content-team orchestration, and role selection |
+| `newtype-chief` | Main newtype workflow, content-team orchestration, and role selection |
 | `newtype-research` | External research, source discovery, trends, and competitive analysis |
 | `newtype-fact-check` | Claim verification, citation checks, and source credibility |
 | `newtype-write` | Drafting articles, newsletters, reports, scripts, and long-form content |
 | `newtype-edit` | Editing for structure, clarity, logic, tone, and polish |
 | `newtype-extract` | Extracting clean Markdown or structured data from files, images, pages, and documents |
 | `newtype-archive` | Searching, organizing, or storing project knowledge under `.newtype/knowledge/` |
-| `newtype-workbench` | Choosing the next Newtype skill, resuming tasks, and reporting progress |
+| `newtype-workbench` | Choosing the next newtype skill, resuming tasks, and reporting progress |
 
 You can invoke the workflow directly in Codex, for example:
 
@@ -83,7 +83,7 @@ Use $newtype-workbench to continue the previous content task.
 
 ## Custom agents
 
-For the full Newtype role experience, install the Codex custom agents as well.
+For the full newtype role experience, install the Codex custom agents as well.
 
 Clone this repository:
 
@@ -148,9 +148,9 @@ bun run install:agents -- --inherit-model
 Override model choices manually:
 
 ```bash
-NEWTYPE_CODEX_CHIEF_MODEL=gpt-5.4 \
-NEWTYPE_CODEX_STRONG_MODEL=gpt-5.4 \
-NEWTYPE_CODEX_FAST_MODEL=gpt-5.4-mini \
+newtype_codex_chief_model=gpt-5.4 \
+newtype_codex_strong_model=gpt-5.4 \
+newtype_codex_fast_model=gpt-5.4-mini \
 bun run install:agents
 ```
 
@@ -186,7 +186,7 @@ Use $newtype-chief to run a research -> fact-check -> write -> edit workflow for
 
 ### Knowledge conventions
 
-Newtype for Codex uses project-local files instead of the full newtype OS memory runtime:
+newtype for Codex uses project-local files instead of the full newtype OS memory runtime:
 
 - `.newtype/knowledge/` for durable notes, source material, and reusable content.
 - `.newtype/workbench/` for task state, continuation notes, and progress reports.
@@ -225,7 +225,7 @@ plugins/newtype-codex/scripts/check.ts
 
 ## Current limitations
 
-Newtype for Codex does not currently include:
+newtype for Codex does not currently include:
 
 - The `nt` CLI and TUI.
 - OpenCode provider/auth integrations.
@@ -248,4 +248,3 @@ Use `@newtype-os/cli` if you want the complete integrated newtype OS experience.
 ## License
 
 Based on [oh-my-opencode](https://github.com/code-yeongyu/oh-my-opencode), follows [SUL-1.0 License](https://github.com/code-yeongyu/oh-my-opencode/blob/master/LICENSE.md).
-

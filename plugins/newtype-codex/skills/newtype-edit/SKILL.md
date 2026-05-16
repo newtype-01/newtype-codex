@@ -3,7 +3,7 @@ name: newtype-edit
 description: Use to refine existing content for structure, clarity, logic, tone, style consistency, concision, and publication readiness.
 ---
 
-# Newtype Edit
+# newtype Edit
 
 Use this skill when the user provides existing content and asks to edit, polish, tighten, improve, restructure, or review it.
 

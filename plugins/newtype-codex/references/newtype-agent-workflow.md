@@ -1,6 +1,6 @@
-# Newtype Agent Workflow
+# newtype Agent Workflow
 
-Newtype for Codex keeps the Newtype content-team roles, but uses Codex-native primitives:
+newtype for Codex keeps the newtype content-team roles, but uses Codex-native primitives:
 
 - Use skills for reusable workflow instructions.
 - Use custom Codex agents for specialized execution.
@@ -27,7 +27,7 @@ Newtype for Codex keeps the Newtype content-team roles, but uses Codex-native pr
 The installer reads `codex debug models` when available and chooses the first matching candidate for each role. If `gpt-5.5` is unavailable in the user's Codex account, install agents with:
 
 ```bash
-NEWTYPE_CODEX_CHIEF_MODEL=gpt-5.4 bun plugins/newtype-codex/scripts/install-agents.ts
+newtype_codex_chief_model=gpt-5.4 bun plugins/newtype-codex/scripts/install-agents.ts
 ```
 
 For maximum forward compatibility, omit fixed model fields entirely:

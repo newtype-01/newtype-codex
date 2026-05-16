@@ -1,11 +1,11 @@
 ---
 name: newtype-workbench
-description: Use to choose the right Newtype skill, resume a previous task, create a task report, maintain task state, or coordinate a multi-skill workflow.
+description: Use to choose the right newtype skill, resume a previous task, create a task report, maintain task state, or coordinate a multi-skill workflow.
 ---
 
-# Newtype Workbench
+# newtype Workbench
 
-Use this skill when the next Newtype step is unclear, the user asks which skill or agent to use, or the task is continuing from earlier work.
+Use this skill when the next newtype step is unclear, the user asks which skill or agent to use, or the task is continuing from earlier work.
 
 If custom agents are installed, delegate substantial routing or progress synthesis to `newtype_workbench`.
 
@@ -20,7 +20,7 @@ If custom agents are installed, delegate substantial routing or progress synthes
 
 ```markdown
 ## Recommendation
-[Which Newtype skill or agent to use next, and why]
+[Which newtype skill or agent to use next, and why]
 
 ## Current State
 - Goal:

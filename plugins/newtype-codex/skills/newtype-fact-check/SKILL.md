@@ -3,7 +3,7 @@ name: newtype-fact-check
 description: Use to verify claims, audit source quality, check citations, identify unsupported assertions, and produce correction notes for drafts or research.
 ---
 
-# Newtype Fact Check
+# newtype Fact Check
 
 Use this skill when the user asks to verify, check, audit, validate, review sources, or confirm whether a draft or claim is accurate.
 

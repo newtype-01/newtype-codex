@@ -18,21 +18,21 @@ const target = global ? path.join(os.homedir(), ".codex", "agents") : path.join(
 
 const candidates = {
   "__CHIEF_MODEL__": [
-    process.env.NEWTYPE_CODEX_CHIEF_MODEL,
+    process.env.newtype_codex_chief_model,
     "gpt-5.5",
     "gpt-5.4",
     "gpt-5.3-codex",
     "gpt-5.2",
   ],
   "__STRONG_MODEL__": [
-    process.env.NEWTYPE_CODEX_STRONG_MODEL,
+    process.env.newtype_codex_strong_model,
     "gpt-5.4",
     "gpt-5.5",
     "gpt-5.3-codex",
     "gpt-5.2",
   ],
   "__FAST_MODEL__": [
-    process.env.NEWTYPE_CODEX_FAST_MODEL,
+    process.env.newtype_codex_fast_model,
     "gpt-5.4-mini",
     "gpt-5.3-codex-spark",
     "gpt-5.4",
@@ -49,9 +49,9 @@ Options:
   --inherit-model     Omit model fields so custom agents inherit the parent Codex session model
 
 Environment overrides:
-  NEWTYPE_CODEX_CHIEF_MODEL   preferred Chief model
-  NEWTYPE_CODEX_STRONG_MODEL  preferred specialist model
-  NEWTYPE_CODEX_FAST_MODEL    preferred utility model`)
+  newtype_codex_chief_model   preferred Chief model
+  newtype_codex_strong_model  preferred specialist model
+  newtype_codex_fast_model    preferred utility model`)
 }
 
 if (args.includes("--help") || args.includes("-h")) {
@@ -134,5 +134,5 @@ for (const file of files) {
   console.log(`wrote ${out}`)
 }
 
-console.log(global ? "installed global Newtype Codex agents" : `installed project Newtype Codex agents in ${target}`)
+console.log(global ? "installed global newtype Codex agents" : `installed project newtype Codex agents in ${target}`)
 if (inherit) console.log("model fields omitted; agents inherit the parent Codex session model")

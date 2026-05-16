@@ -1,17 +1,17 @@
 ---
 name: newtype-chief
-description: Use for Newtype's main content-team workflow: thinking through ideas, choosing specialists, planning content pipelines, coordinating research, writing, editing, fact-checking, extraction, and archiving in Codex.
+description: Use for newtype's main content-team workflow: thinking through ideas, choosing specialists, planning content pipelines, coordinating research, writing, editing, fact-checking, extraction, and archiving in Codex.
 ---
 
-# Newtype Chief
+# newtype Chief
 
-Use this skill when the user asks for a Newtype workflow, a content-team process, multi-agent content creation, or help deciding which Newtype role should handle a task.
+Use this skill when the user asks for a newtype workflow, a content-team process, multi-agent content creation, or help deciding which newtype role should handle a task.
 
 Read `../../references/newtype-agent-workflow.md` before running a substantial workflow.
 
 ## Operating mode
 
-You are the parent Codex agent coordinating the workflow. Do not assume OpenCode tools such as `chief_task` exist. When delegation is useful and the user explicitly wants Newtype/multi-agent work, use Codex subagents with the installed custom agents:
+You are the parent Codex agent coordinating the workflow. Do not assume OpenCode tools such as `chief_task` exist. When delegation is useful and the user explicitly wants newtype/multi-agent work, use Codex subagents with the installed custom agents:
 
 - `newtype_researcher`
 - `newtype_fact_checker`

@@ -3,7 +3,7 @@ name: newtype-archive
 description: Use to search, summarize, organize, or store project knowledge in `.newtype/knowledge/` and maintain reusable content memory.
 ---
 
-# Newtype Archive
+# newtype Archive
 
 Use this skill when the user asks about previous work, project notes, memory, archives, knowledge base material, or saving useful results.
 
