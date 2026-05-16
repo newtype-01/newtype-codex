@@ -138,13 +138,15 @@ bun run install:agents -- --global
 codex debug models
 ```
 
-然后按候选优先级选择当前可见模型：
+然后自动识别当前可见的 `gpt-*` 模型，并按数值版本排序。因此以后出现 `gpt-6` 或 `gpt-5.6` 这类更高模型时，不需要改脚本也会自动优先使用。
 
-| 角色层级 | 候选顺序 |
+| 角色层级 | 默认选择 |
 | --- | --- |
-| Chief | `gpt-5.5` -> `gpt-5.4` -> `gpt-5.3-codex` -> `gpt-5.2` |
-| Strong specialists | `gpt-5.4` -> `gpt-5.5` -> `gpt-5.3-codex` -> `gpt-5.2` |
-| Fast utility roles | `gpt-5.4-mini` -> `gpt-5.3-codex-spark` -> `gpt-5.4` -> `gpt-5.2` |
+| Chief | 当前可见的最高通用 `gpt-*` 模型 |
+| Strong specialists | 当前可见的最高通用 `gpt-*` 模型 |
+| Fast utility roles | 当前可见的最高 `mini`、`spark`、`fast`、`lite` 或 `nano` 轻量 `gpt-*` 模型；没有轻量模型时回退到最高通用模型 |
+
+如果禁用模型检测，或 `codex debug models` 不可用，脚本会使用保守 fallback：Chief 用 `gpt-5.5`，强专家用 `gpt-5.4`，快速工具角色用 `gpt-5.4-mini`。
 
 查看 Codex 当前可见模型：
 
@@ -158,7 +160,7 @@ bun run install:agents -- --list-models
 bun run install:agents -- --inherit-model
 ```
 
-也可以手动指定：
+也可以手动指定。环境变量优先级高于自动检测：
 
 ```bash
 newtype_codex_chief_model=gpt-5.4 \

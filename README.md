@@ -138,13 +138,15 @@ The installer reads the local Codex model catalog when available:
 codex debug models
 ```
 
-It then chooses the first visible model from each role's candidate list:
+It then automatically detects visible `gpt-*` models and sorts them by numeric version, so future models such as `gpt-6` or `gpt-5.6` are picked without changing the script.
 
-| Role tier | Candidate order |
+| Role tier | Default selection |
 | --- | --- |
-| Chief | `gpt-5.5` -> `gpt-5.4` -> `gpt-5.3-codex` -> `gpt-5.2` |
-| Strong specialists | `gpt-5.4` -> `gpt-5.5` -> `gpt-5.3-codex` -> `gpt-5.2` |
-| Fast utility roles | `gpt-5.4-mini` -> `gpt-5.3-codex-spark` -> `gpt-5.4` -> `gpt-5.2` |
+| Chief | Highest visible general `gpt-*` model |
+| Strong specialists | Highest visible general `gpt-*` model |
+| Fast utility roles | Highest visible `gpt-*` model with `mini`, `spark`, `fast`, `lite`, or `nano`; falls back to the highest general model |
+
+If model detection is disabled or unavailable, the script uses conservative fallbacks: `gpt-5.5` for Chief, `gpt-5.4` for strong specialists, and `gpt-5.4-mini` for fast utility roles.
 
 List models visible to Codex:
 
@@ -158,7 +160,7 @@ Avoid fixed model names and inherit the current Codex session model:
 bun run install:agents -- --inherit-model
 ```
 
-Override model choices manually:
+Override model choices manually. Environment variables always take precedence over automatic detection:
 
 ```bash
 newtype_codex_chief_model=gpt-5.4 \

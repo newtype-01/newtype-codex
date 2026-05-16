@@ -16,37 +16,31 @@ const projectIndex = args.indexOf("--project")
 const project = projectIndex >= 0 ? args[projectIndex + 1] : process.cwd()
 const target = global ? path.join(os.homedir(), ".codex", "agents") : path.join(project, ".codex", "agents")
 
-const candidates = {
-  "__CHIEF_MODEL__": [
-    process.env.newtype_codex_chief_model,
-    "gpt-5.5",
-    "gpt-5.4",
-    "gpt-5.3-codex",
-    "gpt-5.2",
-  ],
-  "__STRONG_MODEL__": [
-    process.env.newtype_codex_strong_model,
-    "gpt-5.4",
-    "gpt-5.5",
-    "gpt-5.3-codex",
-    "gpt-5.2",
-  ],
-  "__FAST_MODEL__": [
-    process.env.newtype_codex_fast_model,
-    "gpt-5.4-mini",
-    "gpt-5.3-codex-spark",
-    "gpt-5.4",
-    "gpt-5.2",
-  ],
+const env = {
+  "__CHIEF_MODEL__": process.env.newtype_codex_chief_model,
+  "__STRONG_MODEL__": process.env.newtype_codex_strong_model,
+  "__FAST_MODEL__": process.env.newtype_codex_fast_model,
 }
+
+const fallback = {
+  "__CHIEF_MODEL__": "gpt-5.5",
+  "__STRONG_MODEL__": "gpt-5.4",
+  "__FAST_MODEL__": "gpt-5.4-mini",
+}
+
+const utility = /(mini|spark|fast|lite|nano)/i
 
 function usage() {
   console.log(`Usage: bun plugins/newtype-codex/scripts/install-agents.ts [--global] [--project <dir>] [--dry-run] [--force] [--inherit-model]
 
 Options:
   --list-models       Print Codex model slugs from "codex debug models" and exit
-  --no-detect-models  Skip Codex model catalog detection and use the first fallback candidate
+  --no-detect-models  Skip Codex model catalog detection and use fallback models
   --inherit-model     Omit model fields so custom agents inherit the parent Codex session model
+
+Default model strategy:
+  Visible gpt-* models are sorted by numeric version. Chief and specialist agents
+  use the highest general model; utility agents use the highest mini/spark/fast model.
 
 Environment overrides:
   newtype_codex_chief_model   preferred Chief model
@@ -66,6 +60,9 @@ if (projectIndex >= 0 && !project) {
 
 async function catalog() {
   if (!detect && !list) return []
+  if (process.env.newtype_codex_models_json) {
+    return slugs(JSON.parse(process.env.newtype_codex_models_json) as Catalog)
+  }
 
   const proc = Bun.spawn(["codex", "debug", "models"], {
     stdout: "pipe",
@@ -78,25 +75,57 @@ async function catalog() {
   const start = text.indexOf("{")
   if (start < 0) return []
 
-  const data = JSON.parse(text.slice(start)) as {
-    models?: Array<{ slug?: string; visibility?: string }>
-  }
+  return slugs(JSON.parse(text.slice(start)) as Catalog)
+}
+
+type Catalog = {
+  models?: Array<{ slug?: string; visibility?: string }>
+}
+
+function slugs(data: Catalog) {
   return (data.models ?? [])
     .filter((model) => model.slug && model.visibility !== "hide")
     .map((model) => model.slug!)
 }
 
 const available = await catalog()
+const gpt = available.filter((model) => /^gpt-\d/.test(model)).sort(rank)
+const general = gpt.filter((model) => !utility.test(model))
+const quick = gpt.filter((model) => utility.test(model))
 
 if (list) {
   for (const model of available) console.log(model)
   process.exit(0)
 }
 
-function pick(key: keyof typeof candidates) {
-  const values = candidates[key].filter((value): value is string => !!value)
-  if (!detect || available.length === 0) return values[0]
-  return values.find((value) => available.includes(value)) ?? values[0]
+function version(model: string) {
+  return /^gpt-(\d+(?:\.\d+)*)/.exec(model)?.[1].split(".").map(Number) ?? []
+}
+
+function score(model: string) {
+  if (utility.test(model)) return 0
+  if (model.includes("codex")) return 2
+  return 1
+}
+
+function rank(a: string, b: string) {
+  const left = version(a)
+  const right = version(b)
+  const size = Math.max(left.length, right.length)
+  for (const index of Array.from({ length: size }, (_, value) => value)) {
+    const diff = (right[index] ?? 0) - (left[index] ?? 0)
+    if (diff !== 0) return diff
+  }
+  const diff = score(b) - score(a)
+  if (diff !== 0) return diff
+  return a.localeCompare(b)
+}
+
+function pick(key: keyof typeof fallback) {
+  if (env[key]) return env[key]
+  if (!detect || gpt.length === 0) return fallback[key]
+  if (key === "__FAST_MODEL__") return quick[0] ?? general[0] ?? fallback[key]
+  return general[0] ?? gpt[0] ?? fallback[key]
 }
 
 const models = {
