@@ -1,0 +1,21 @@
+{
+  "name": "newtype",
+  "interface": {
+    "displayName": "Newtype"
+  },
+  "plugins": [
+    {
+      "name": "newtype-codex",
+      "source": {
+        "source": "local",
+        "path": "./plugins/newtype-codex"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
+

@@ -1,0 +1,14 @@
+{
+  "name": "newtype-codex-marketplace",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "install:agents": "bun plugins/newtype-codex/scripts/install-agents.ts",
+    "check": "bun plugins/newtype-codex/scripts/check.ts"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  }
+}
+

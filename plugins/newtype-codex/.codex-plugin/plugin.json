@@ -1,0 +1,43 @@
+{
+  "name": "newtype-codex",
+  "version": "0.1.0",
+  "description": "Newtype content-team workflow for Codex, packaged as reusable skills plus custom agent templates.",
+  "author": {
+    "name": "Newtype",
+    "email": "hello@newtype.pro",
+    "url": "https://github.com/newtype-01"
+  },
+  "homepage": "https://github.com/newtype-01/newtype-codex",
+  "repository": "https://github.com/newtype-01/newtype-codex",
+  "license": "SUL-1.0",
+  "keywords": [
+    "newtype",
+    "codex",
+    "agents",
+    "writing",
+    "research",
+    "fact-checking"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Newtype for Codex",
+    "shortDescription": "Multi-agent content workflows for research, writing, editing, fact-checking, and archiving.",
+    "longDescription": "A Codex-native packaging of Newtype's content-team workflow. It bundles workflow skills and custom agent templates while intentionally leaving out OpenCode-specific runtime integration.",
+    "developerName": "Newtype",
+    "category": "Productivity",
+    "capabilities": [
+      "Research",
+      "Write",
+      "Analyze",
+      "Review"
+    ],
+    "websiteURL": "https://newtype.pro",
+    "defaultPrompt": [
+      "Use Newtype to research and draft an article.",
+      "Fact-check this draft with Newtype.",
+      "Continue the content workflow with Newtype."
+    ],
+    "brandColor": "#111827"
+  }
+}
+

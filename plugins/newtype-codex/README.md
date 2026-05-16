@@ -1,0 +1,46 @@
+# Newtype for Codex Plugin
+
+这是 Codex plugin 根目录。插件本体提供 Newtype skills；自定义 agents 通过 `templates/agents/` 和 `scripts/install-agents.ts` 安装。
+
+## Included
+
+- `skills/`：Newtype Chief、Research、Fact Check、Write、Edit、Extract、Archive、Workbench。
+- `templates/agents/`：对应的 Codex custom agent TOML 模板。
+- `scripts/install-agents.ts`：把 agent 模板写入 `.codex/agents/` 或 `~/.codex/agents/`。
+- `references/newtype-agent-workflow.md`：Newtype 工作流和模型选择说明。
+
+## Install agents
+
+项目级安装：
+
+```bash
+bun plugins/newtype-codex/scripts/install-agents.ts --project /path/to/project
+```
+
+全局安装：
+
+```bash
+bun plugins/newtype-codex/scripts/install-agents.ts --global
+```
+
+继承当前 Codex 会话模型，不写死模型名：
+
+```bash
+bun plugins/newtype-codex/scripts/install-agents.ts --inherit-model
+```
+
+查看当前 Codex 可见模型：
+
+```bash
+bun plugins/newtype-codex/scripts/install-agents.ts --list-models
+```
+
+## Not included
+
+- OpenCode TUI
+- OpenCode provider/auth 定制
+- OpenCode plugin runtime
+- OpenCode session client tools
+- 自动 MCP 注入
+- 默认启用 plugin hooks
+
