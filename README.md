@@ -58,7 +58,20 @@ Add this repository as a Codex marketplace:
 codex plugin marketplace add newtype-01/newtype-codex
 ```
 
-Then open `/plugins` in Codex and install **newtype for Codex**.
+Then open `/plugins` in Codex and install **newtype**.
+
+If the marketplace is visible but the plugin does not appear in the installed plugin list, make sure the plugin is enabled in `~/.codex/config.toml`:
+
+```toml
+[plugins."newtype-codex@newtype"]
+enabled = true
+```
+
+Restart Codex App after changing the config or upgrading the marketplace:
+
+```bash
+codex plugin marketplace upgrade newtype
+```
 
 After installation, Codex can use these skills:
 

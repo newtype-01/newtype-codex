@@ -35,10 +35,12 @@ async function toml(file: string) {
 await json(path.join(repo, ".agents", "plugins", "marketplace.json"))
 await json(path.join(plugin, ".codex-plugin", "plugin.json"))
 exists(path.join(plugin, "references", "newtype-agent-workflow.md"))
+exists(path.join(plugin, "assets", "composer-icon.svg"))
+exists(path.join(plugin, "assets", "logo.svg"))
 
 const brand = new RegExp(`${"New"}${"type"}|${"NEW"}${"TYPE"}`)
 
-for await (const file of new Bun.Glob("**/*.{md,json,toml,ts}").scan({ cwd: repo, absolute: true })) {
+for await (const file of new Bun.Glob("**/*.{md,json,toml,ts,svg}").scan({ cwd: repo, absolute: true })) {
   if (file.includes("node_modules")) continue
   const text = await Bun.file(file).text()
   if (brand.test(text)) {

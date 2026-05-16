@@ -20,7 +20,7 @@
   ],
   "skills": "./skills/",
   "interface": {
-    "displayName": "newtype for Codex",
+    "displayName": "newtype",
     "shortDescription": "Multi-agent content workflows for research, writing, editing, fact-checking, and archiving.",
     "longDescription": "A Codex-native packaging of newtype's content-team workflow. It bundles workflow skills and custom agent templates while intentionally leaving out OpenCode-specific runtime integration.",
     "developerName": "newtype",
@@ -32,12 +32,14 @@
       "Review"
     ],
     "websiteURL": "https://newtype.pro",
+    "composerIcon": "./assets/composer-icon.svg",
+    "logo": "./assets/logo.svg",
     "defaultPrompt": [
       "Use newtype to research and draft an article.",
       "Fact-check this draft with newtype.",
       "Continue the content workflow with newtype."
     ],
-    "brandColor": "#111827"
+    "brandColor": "#111827",
+    "screenshots": []
   }
 }
-
