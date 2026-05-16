@@ -36,6 +36,17 @@ await json(path.join(repo, ".agents", "plugins", "marketplace.json"))
 await json(path.join(plugin, ".codex-plugin", "plugin.json"))
 exists(path.join(plugin, "references", "newtype-agent-workflow.md"))
 
+const brand = new RegExp(`${"New"}${"type"}|${"NEW"}${"TYPE"}`)
+
+for await (const file of new Bun.Glob("**/*.{md,json,toml,ts}").scan({ cwd: repo, absolute: true })) {
+  if (file.includes("node_modules")) continue
+  const text = await Bun.file(file).text()
+  if (brand.test(text)) {
+    throw new Error(`brand case violation: ${path.relative(repo, file)}`)
+  }
+}
+console.log("brand ok newtype")
+
 for await (const file of new Bun.Glob("*/SKILL.md").scan({ cwd: path.join(plugin, "skills"), absolute: true })) {
   await skill(file)
 }
@@ -45,4 +56,3 @@ for await (const file of new Bun.Glob("*.toml").scan({ cwd: path.join(plugin, "t
 }
 
 console.log("newtype-codex check passed")
-

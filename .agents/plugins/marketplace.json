@@ -1,7 +1,7 @@
 {
   "name": "newtype",
   "interface": {
-    "displayName": "Newtype"
+    "displayName": "newtype"
   },
   "plugins": [
     {
@@ -18,4 +18,3 @@
     }
   ]
 }
-
