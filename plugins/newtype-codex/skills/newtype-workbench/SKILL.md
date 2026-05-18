@@ -7,7 +7,7 @@ description: Use to choose the right newtype skill, resume a previous task, crea
 
 Use this skill when the next newtype step is unclear, the user asks which skill or agent to use, or the task is continuing from earlier work.
 
-If custom agents are installed, delegate substantial routing or progress synthesis to `newtype_workbench`.
+Workbench is a skill, not one of the 8 newtype custom agents. For substantial cross-role coordination, use `newtype_deputy` after loading this skill.
 
 ## Workflow
 

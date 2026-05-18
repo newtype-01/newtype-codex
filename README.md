@@ -19,7 +19,9 @@ At its core, newtype OS is an **8-agent multi-layer orchestration system** built
 ```text
 You ↔ Chief (Editor-in-Chief)
           ↓
-      Researcher · Fact-Checker · Archivist · Extractor · Writer · Editor · Workbench
+      Deputy
+          ↓
+      Researcher · Fact-Checker · Archivist · Extractor · Writer · Editor
 ```
 
 This repository is the **Codex plugin edition**. It keeps the newtype content-team workflow, but uses Codex-native primitives:
@@ -138,13 +140,15 @@ Installed agent names:
 | Agent | Responsibility |
 | --- | --- |
 | `newtype_chief` | Thought partner and content workflow coordinator |
+| `newtype_deputy` | Deputy editor and execution dispatcher |
 | `newtype_researcher` | External intelligence gathering and source discovery |
 | `newtype_fact_checker` | Claim verification and source credibility assessment |
 | `newtype_writer` | Draft creation from briefs, notes, and research |
 | `newtype_editor` | Structure, logic, clarity, and language polish |
 | `newtype_extractor` | PDF, image, web page, and document extraction |
 | `newtype_archivist` | Project knowledge search and `.newtype/knowledge/` maintenance |
-| `newtype_workbench` | Skill routing, task continuation, and progress reporting |
+
+`newtype-workbench` remains a skill for routing, task continuation, and progress reporting; it is not a custom agent.
 
 ## Model selection
 
@@ -192,13 +196,15 @@ bun run install:agents
 | Agent | Role | Responsibility |
 | --- | --- | --- |
 | **Chief** | Editor-in-Chief | Your entry point: thought partner and task coordinator |
+| **Deputy** | Deputy editor | Execution dispatcher between Chief and specialists |
 | **Researcher** | Researcher | External intelligence gathering and trend discovery |
 | **Fact-Checker** | Verifier | Fact verification and source credibility assessment |
 | **Archivist** | Archivist | Internal knowledge retrieval and correlation |
 | **Extractor** | Extractor | PDF, image, web, and document extraction |
 | **Writer** | Writer | Turns source material into structured drafts |
 | **Editor** | Editor | Language polish, logic strengthening, and consistency |
-| **Workbench** | Router | Skill selection, task continuation, and progress reports |
+
+Workbench is provided as the `newtype-workbench` skill for routing, task continuation, and progress reports.
 
 ### Workflow examples
 

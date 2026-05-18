@@ -1,4 +1,5 @@
 import { existsSync } from "node:fs"
+import { rm } from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
 
@@ -15,6 +16,7 @@ const list = args.includes("--list-models")
 const projectIndex = args.indexOf("--project")
 const project = projectIndex >= 0 ? args[projectIndex + 1] : process.cwd()
 const target = global ? path.join(os.homedir(), ".codex", "agents") : path.join(project, ".codex", "agents")
+const stale = ["newtype_workbench.toml"]
 
 const env = {
   "__CHIEF_MODEL__": process.env.newtype_codex_chief_model,
@@ -139,6 +141,17 @@ if (!inherit) {
 }
 
 await Bun.$`mkdir -p ${target}`
+
+for (const file of stale) {
+  const out = path.join(target, file)
+  if (!existsSync(out)) continue
+  if (dry) {
+    console.log(`remove ${out}`)
+    continue
+  }
+  await rm(out)
+  console.log(`removed ${out}`)
+}
 
 const files = (await Array.fromAsync(new Bun.Glob("*.toml").scan({ cwd: templates }))).sort()
 

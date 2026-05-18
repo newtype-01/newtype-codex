@@ -47,15 +47,17 @@ After installation, verify the expected files exist:
 
 ```text
 ~/.codex/agents/newtype_chief.toml
+~/.codex/agents/newtype_deputy.toml
 ~/.codex/agents/newtype_researcher.toml
 ~/.codex/agents/newtype_fact_checker.toml
 ~/.codex/agents/newtype_writer.toml
 ~/.codex/agents/newtype_editor.toml
 ~/.codex/agents/newtype_extractor.toml
 ~/.codex/agents/newtype_archivist.toml
-~/.codex/agents/newtype_workbench.toml
 ```
 
 For a project-local install, check `<project>/.codex/agents/` instead.
+
+The installer removes stale `newtype_workbench.toml` files from earlier newtype-codex versions because Workbench is a skill, not a custom agent.
 
 Tell the user to restart Codex App or start a new Codex session if agents do not appear immediately.

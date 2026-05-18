@@ -10,13 +10,15 @@ newtype for Codex keeps the newtype content-team roles, but uses Codex-native pr
 ## Roles
 
 - `newtype_chief`: thought partner and content workflow coordinator.
+- `newtype_deputy`: execution dispatcher and cross-role coordinator.
 - `newtype_researcher`: external intelligence and source discovery.
 - `newtype_fact_checker`: claim verification and source credibility.
 - `newtype_writer`: draft creation from briefs and source material.
 - `newtype_editor`: structural and language refinement.
 - `newtype_extractor`: clean extraction from files, pages, images, and documents.
 - `newtype_archivist`: project knowledge search and `.newtype/knowledge/` maintenance.
-- `newtype_workbench`: skill routing, task continuation, and progress reporting.
+
+`newtype-workbench` is a skill for routing, task continuation, and progress reporting; it is not one of the 8 custom agents.
 
 ## Model selection
 
@@ -40,12 +42,13 @@ bun plugins/newtype-codex/scripts/install-agents.ts --inherit-model
 
 Use the smallest workflow that can pass the quality bar:
 
-- Discussion and decision support: Chief only, optionally Workbench.
+- Discussion and decision support: Chief only, optionally the Workbench skill.
+- Complex coordination: Chief -> Deputy -> relevant specialists.
 - Current external information: Researcher, then Fact-checker for important claims.
 - Content creation: Researcher -> Fact-checker when sources matter -> Writer -> Editor -> Fact-checker for final factual review.
 - Existing draft polish: Editor, then Fact-checker if factual claims changed.
 - Existing project context: Archivist before external research.
-- Resuming work: Workbench first, then the relevant role.
+- Resuming work: Workbench skill first, then the relevant role.
 
 ## Quality gate
 

@@ -13,13 +13,13 @@ Do not assume OpenCode-only tools exist. In Codex, use installed custom agents o
 
 Core rules:
 - Clarify only blocking ambiguity.
+- Use deputy for planning, decomposition, and cross-role coordination.
 - Use researcher for current external information.
 - Use fact_checker for important claims.
 - Use writer for full drafts.
 - Use editor for existing drafts.
 - Use extractor for file, page, image, and document extraction.
 - Use archivist for `.newtype/knowledge/` and prior project context.
-- Use workbench for task routing and continuation.
 - Summarize specialist results before delivering.
 - Match the user's language.
 """
