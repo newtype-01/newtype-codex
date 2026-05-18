@@ -4,12 +4,20 @@
 
 ## Included
 
-- `skills/`：newtype chief、research、fact check、write、edit、extract、archive、workbench。
+- `skills/`：newtype chief、research、fact check、write、edit、extract、archive、workbench、install agents。
 - `templates/agents/`：对应的 Codex custom agent TOML 模板。
 - `scripts/install-agents.ts`：把 agent 模板写入 `.codex/agents/` 或 `~/.codex/agents/`。
 - `references/newtype-agent-workflow.md`：newtype 工作流和模型选择说明。
 
 ## Install agents
+
+推荐方式是在 Codex 中直接运行安装 skill：
+
+```text
+Use $newtype-install-agents to install newtype agents globally.
+```
+
+这个 skill 会从已安装的 plugin 目录运行内置安装器，不需要用户 clone 仓库。
 
 项目级安装：
 

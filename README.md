@@ -85,6 +85,7 @@ After installation, Codex can use these skills:
 | `newtype-extract` | Extracting clean Markdown or structured data from files, images, pages, and documents |
 | `newtype-archive` | Searching, organizing, or storing project knowledge under `.newtype/knowledge/` |
 | `newtype-workbench` | Choosing the next newtype skill, resuming tasks, and reporting progress |
+| `newtype-install-agents` | Installing or refreshing the optional newtype custom agents |
 
 You can invoke the workflow directly in Codex, for example:
 
@@ -92,6 +93,7 @@ You can invoke the workflow directly in Codex, for example:
 Use $newtype-chief to research this topic and draft an outline.
 Use $newtype-fact-check to verify the claims in this article.
 Use $newtype-workbench to continue the previous content task.
+Use $newtype-install-agents to install newtype agents globally.
 ```
 
 ## Custom agents
@@ -100,7 +102,15 @@ For the full newtype role experience, install the Codex custom agents as well.
 
 This cannot currently be done automatically by the Codex plugin installer: plugin install does not execute arbitrary setup scripts. The included installer copies the agent templates into `~/.codex/agents/` or a project `.codex/agents/`, where Codex can use them as custom agents.
 
-Clone this repository:
+The recommended path is to run the setup skill inside Codex after installing the plugin:
+
+```text
+Use $newtype-install-agents to install newtype agents globally.
+```
+
+That skill runs the installer from the installed plugin cache, so users do not need to clone this repository.
+
+Manual local development path:
 
 ```bash
 git clone https://github.com/newtype-01/newtype-codex.git

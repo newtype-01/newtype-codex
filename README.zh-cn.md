@@ -85,6 +85,7 @@ codex plugin marketplace upgrade newtype
 | `newtype-extract` | 从文件、图片、网页和文档中提取 Markdown 或结构化数据 |
 | `newtype-archive` | 搜索、整理或保存 `.newtype/knowledge/` 项目知识 |
 | `newtype-workbench` | 选择下一个 newtype skill、继续任务和生成进度报告 |
+| `newtype-install-agents` | 安装或刷新可选的 newtype custom agents |
 
 可以在 Codex 中直接这样使用：
 
@@ -92,6 +93,7 @@ codex plugin marketplace upgrade newtype
 Use $newtype-chief to research this topic and draft an outline.
 Use $newtype-fact-check to verify the claims in this article.
 Use $newtype-workbench to continue the previous content task.
+Use $newtype-install-agents to install newtype agents globally.
 ```
 
 ## 安装自定义 Agents
@@ -100,7 +102,15 @@ Use $newtype-workbench to continue the previous content task.
 
 这一步目前不能由 Codex plugin 安装器自动完成：插件安装不会执行任意 setup 脚本。仓库内置的安装器会把 agent 模板复制到 `~/.codex/agents/` 或项目 `.codex/agents/`，复制后 Codex 可以把它们作为 custom agents 使用。
 
-克隆仓库：
+推荐方式是在 Codex 中直接运行安装 skill：
+
+```text
+Use $newtype-install-agents to install newtype agents globally.
+```
+
+这个 skill 会从已安装的 plugin 缓存目录运行内置安装器，所以普通用户不需要 clone 仓库。
+
+本地开发时也可以手动运行：
 
 ```bash
 git clone https://github.com/newtype-01/newtype-codex.git

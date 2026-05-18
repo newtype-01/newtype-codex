@@ -1,6 +1,6 @@
 {
   "name": "newtype-codex",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "newtype content-team workflow for Codex, packaged as reusable skills plus custom agent templates.",
   "author": {
     "name": "newtype",
@@ -35,6 +35,7 @@
     "composerIcon": "./assets/composer-icon.svg",
     "logo": "./assets/logo.svg",
     "defaultPrompt": [
+      "Install the newtype custom agents globally.",
       "Use newtype-chief to coordinate the newtype content team for researching and drafting an article.",
       "Fact-check this draft with newtype.",
       "Continue the content workflow with newtype."
