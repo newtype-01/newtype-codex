@@ -48,7 +48,7 @@ It intentionally leaves out OpenCode-specific integration such as the OpenCode T
 
 `@newtype-os/plugin` is the OpenCode plugin edition. It adds the newtype agent team to an existing OpenCode installation.
 
-newtype for Codex is narrower by design. Codex plugins currently install skills automatically, but they do not run post-install scripts or register custom agents on install. Custom subagents are still `.codex/agents/*.toml` files. This repository therefore ships both: the plugin installs newtype skills, and the included installer writes newtype custom agent templates into Codex config.
+newtype for Codex is narrower by design. Codex plugins currently install skills automatically, but they do not run post-install scripts that copy custom agents into Codex config. Custom subagents are still `.codex/agents/*.toml` files. This repository therefore ships both: the plugin installs newtype skills, and the included installer writes newtype custom agent templates into Codex config.
 
 ## Installation
 
@@ -98,7 +98,7 @@ Use $newtype-workbench to continue the previous content task.
 
 For the full newtype role experience, install the Codex custom agents as well.
 
-This cannot currently be done automatically by the Codex plugin installer: plugin install does not execute arbitrary setup scripts, and Codex does not yet register plugin-bundled custom agents into `~/.codex/agents/`.
+This cannot currently be done automatically by the Codex plugin installer: plugin install does not execute arbitrary setup scripts. The included installer copies the agent templates into `~/.codex/agents/` or a project `.codex/agents/`, where Codex can use them as custom agents.
 
 Clone this repository:
 
@@ -120,6 +120,8 @@ bun run install:agents -- --global
 ```
 
 After the agents are installed, invoking `$newtype-chief` is intended to act as the newtype orchestration entrypoint. For substantial content workflows, Chief should coordinate the installed specialist agents without requiring you to repeat "multi-agent" or "delegate" in every prompt.
+
+If agents do not appear immediately after installation, restart Codex App or start a new Codex session so the agent directory is reloaded.
 
 Installed agent names:
 

@@ -1,6 +1,6 @@
 # newtype for Codex Plugin
 
-这是 Codex plugin 根目录。插件本体提供 newtype skills；自定义 agents 通过 `templates/agents/` 和 `scripts/install-agents.ts` 安装。Codex plugin 安装目前不会自动执行这个脚本，也不会自动把插件内置 agents 注册进 `~/.codex/agents/`。
+这是 Codex plugin 根目录。插件本体提供 newtype skills；自定义 agents 通过 `templates/agents/` 和 `scripts/install-agents.ts` 安装。Codex plugin 安装目前不会自动执行这个脚本；运行安装器后，agent 模板会被复制到 `.codex/agents/` 或 `~/.codex/agents/`，并可被 Codex 作为 custom agents 使用。
 
 ## Included
 
