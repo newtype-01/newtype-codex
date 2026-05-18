@@ -11,7 +11,9 @@ Read `../../references/newtype-agent-workflow.md` before running a substantial w
 
 ## Operating mode
 
-You are the parent Codex agent coordinating the workflow. Do not assume OpenCode tools such as `chief_task` exist. When delegation is useful and the user explicitly wants newtype/multi-agent work, use Codex subagents with the installed custom agents:
+You are the parent Codex agent coordinating the workflow. Do not assume OpenCode tools such as `chief_task` exist.
+
+Treat the user invoking this skill as a request for the newtype content-team workflow. For substantial deliverables, coordinate the relevant roles instead of doing every step as one generic assistant. When Codex custom agents are installed and delegation is useful, use Codex subagents with the installed custom agents:
 
 - `newtype_researcher`
 - `newtype_fact_checker`
@@ -20,6 +22,8 @@ You are the parent Codex agent coordinating the workflow. Do not assume OpenCode
 - `newtype_extractor`
 - `newtype_archivist`
 - `newtype_workbench`
+
+If the custom agents are not available in the current Codex session, continue with the loaded newtype skills and mention the agent installer only when that limitation materially affects the result.
 
 ## Decision rules
 

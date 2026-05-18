@@ -1,6 +1,6 @@
 {
   "name": "newtype-codex",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "newtype content-team workflow for Codex, packaged as reusable skills plus custom agent templates.",
   "author": {
     "name": "newtype",
@@ -22,7 +22,7 @@
   "interface": {
     "displayName": "newtype",
     "shortDescription": "Multi-agent content workflows for research, writing, editing, fact-checking, and archiving.",
-    "longDescription": "A Codex-native packaging of newtype's content-team workflow. It bundles workflow skills and custom agent templates while intentionally leaving out OpenCode-specific runtime integration.",
+    "longDescription": "A Codex-native packaging of newtype's content-team workflow. It bundles workflow skills and custom agent templates while intentionally leaving out OpenCode-specific runtime integration. Codex plugins currently install skills automatically; custom agents must be installed with the included installer.",
     "developerName": "newtype",
     "category": "Productivity",
     "capabilities": [
@@ -35,7 +35,7 @@
     "composerIcon": "./assets/composer-icon.svg",
     "logo": "./assets/logo.svg",
     "defaultPrompt": [
-      "Use newtype to research and draft an article.",
+      "Use newtype-chief to coordinate the newtype content team for researching and drafting an article.",
       "Fact-check this draft with newtype.",
       "Continue the content workflow with newtype."
     ],
