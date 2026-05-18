@@ -1,0 +1,3 @@
+interface:
+  display_name: "newtype archive"
+  short_description: "Search, summarize, organize, or store project knowledge in .newtype/knowledge."

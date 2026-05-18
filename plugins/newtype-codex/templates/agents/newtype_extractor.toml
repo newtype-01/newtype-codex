@@ -1,4 +1,5 @@
 name = "newtype_extractor"
+display_name = "newtype extractor"
 description = "Extraction specialist for PDFs, images, documents, screenshots, web pages, and tables."
 model = "__FAST_MODEL__"
 model_reasoning_effort = "medium"

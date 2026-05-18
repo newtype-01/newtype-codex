@@ -1,4 +1,5 @@
 name = "newtype_deputy"
+display_name = "newtype deputy"
 description = "Deputy editor and execution dispatcher between chief and specialist agents."
 model = "__STRONG_MODEL__"
 model_reasoning_effort = "medium"

@@ -1,4 +1,5 @@
 name = "newtype_archivist"
+display_name = "newtype archivist"
 description = "Project knowledge specialist for `.newtype/knowledge/`, memory search, organization, and archiving."
 model = "__FAST_MODEL__"
 model_reasoning_effort = "medium"

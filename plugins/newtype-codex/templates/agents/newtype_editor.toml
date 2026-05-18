@@ -1,4 +1,5 @@
 name = "newtype_editor"
+display_name = "newtype editor"
 description = "Editing specialist for structure, logic, clarity, tone, consistency, and publication polish."
 model = "__STRONG_MODEL__"
 model_reasoning_effort = "medium"

@@ -1,4 +1,5 @@
 name = "newtype_writer"
+display_name = "newtype writer"
 description = "Drafting specialist for articles, reports, newsletters, scripts, and structured long-form content."
 model = "__STRONG_MODEL__"
 model_reasoning_effort = "medium"

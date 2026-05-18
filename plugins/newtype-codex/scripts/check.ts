@@ -24,12 +24,20 @@ async function skill(file: string) {
 
 async function toml(file: string) {
   const text = await Bun.file(file).text()
-  for (const field of ["name", "description", "developer_instructions"]) {
+  for (const field of ["name", "display_name", "description", "developer_instructions"]) {
     if (!new RegExp(`^${field}\\s*=`, "m").test(text)) {
       throw new Error(`missing ${field}: ${path.relative(repo, file)}`)
     }
   }
   console.log(`agent ok ${path.relative(repo, file)}`)
+}
+
+async function metadata(file: string) {
+  const text = await Bun.file(file).text()
+  if (!/^\s*display_name:\s*"newtype /m.test(text)) {
+    throw new Error(`missing lowercase display_name: ${path.relative(repo, file)}`)
+  }
+  console.log(`metadata ok ${path.relative(repo, file)}`)
 }
 
 async function models() {
@@ -73,7 +81,7 @@ exists(path.join(plugin, "assets", "logo.svg"))
 
 const brand = new RegExp(`${"New"}${"type"}|${"NEW"}${"TYPE"}`)
 
-for await (const file of new Bun.Glob("**/*.{md,json,toml,ts,svg}").scan({ cwd: repo, absolute: true })) {
+for await (const file of new Bun.Glob("**/*.{md,json,toml,ts,svg,yaml,yml}").scan({ cwd: repo, absolute: true })) {
   if (file.includes("node_modules")) continue
   const text = await Bun.file(file).text()
   if (brand.test(text)) {
@@ -85,6 +93,10 @@ await models()
 
 for await (const file of new Bun.Glob("*/SKILL.md").scan({ cwd: path.join(plugin, "skills"), absolute: true })) {
   await skill(file)
+}
+
+for await (const file of new Bun.Glob("*/agents/openai.yaml").scan({ cwd: path.join(plugin, "skills"), absolute: true })) {
+  await metadata(file)
 }
 
 for await (const file of new Bun.Glob("*.toml").scan({ cwd: path.join(plugin, "templates", "agents"), absolute: true })) {
