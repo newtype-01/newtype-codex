@@ -1,6 +1,6 @@
 ---
 name: newtype-chief
-description: Use for newtype's main content-team workflow: thinking through ideas, choosing specialists, planning content pipelines, coordinating research, writing, editing, fact-checking, extraction, and archiving in Codex.
+description: "Use for newtype's main content-team workflow: thinking through ideas, choosing specialists, planning content pipelines, coordinating research, writing, editing, fact-checking, extraction, and archiving in Codex."
 ---
 
 # newtype Chief
@@ -33,4 +33,3 @@ You are the parent Codex agent coordinating the workflow. Do not assume OpenCode
 ## Output
 
 Return the final answer in the user's language. Keep the process mostly invisible unless the user asks for the workflow details. Summarize specialist results instead of pasting raw subagent output.
-
