@@ -4,7 +4,7 @@
 
 ## Included
 
-- `skills/`：newtype Chief、Research、Fact Check、Write、Edit、Extract、Archive、Workbench。
+- `skills/`：newtype chief、research、fact check、write、edit、extract、archive、workbench。
 - `templates/agents/`：对应的 Codex custom agent TOML 模板。
 - `scripts/install-agents.ts`：把 agent 模板写入 `.codex/agents/` 或 `~/.codex/agents/`。
 - `references/newtype-agent-workflow.md`：newtype 工作流和模型选择说明。

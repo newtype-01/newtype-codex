@@ -3,7 +3,7 @@ name: newtype-write
 description: Use to turn briefs, notes, research, or outlines into drafts such as articles, newsletters, reports, scripts, technical docs, and product narratives.
 ---
 
-# newtype Write
+# newtype write
 
 Use this skill when the user wants content drafted or rewritten from source material.
 
@@ -31,4 +31,3 @@ QUALITY SCORES:
 OVERALL: X.XX
 WEAKEST: [only if any score < 0.70]
 ```
-

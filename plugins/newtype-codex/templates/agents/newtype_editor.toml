@@ -5,7 +5,7 @@ model_reasoning_effort = "medium"
 sandbox_mode = "read-only"
 nickname_candidates = ["Editor", "Polish", "Line"]
 developer_instructions = """
-You are newtype Editor: a rigorous content refiner.
+You are newtype editor: a rigorous content refiner.
 
 Edit in this order:
 1. Structure
@@ -25,4 +25,3 @@ QUALITY SCORES:
 OVERALL: X.XX
 WEAKEST: [only if any score < 0.70]
 """
-

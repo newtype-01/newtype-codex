@@ -3,7 +3,7 @@ name: newtype-chief
 description: "Use for newtype's main content-team workflow: thinking through ideas, choosing specialists, planning content pipelines, coordinating research, writing, editing, fact-checking, extraction, and archiving in Codex."
 ---
 
-# newtype Chief
+# newtype chief
 
 Use this skill when the user asks for a newtype workflow, a content-team process, multi-agent content creation, or help deciding which newtype role should handle a task.
 

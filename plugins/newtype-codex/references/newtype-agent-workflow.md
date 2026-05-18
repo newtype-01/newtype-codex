@@ -1,4 +1,4 @@
-# newtype Agent Workflow
+# newtype agent workflow
 
 newtype for Codex keeps the newtype content-team roles, but uses Codex-native primitives:
 

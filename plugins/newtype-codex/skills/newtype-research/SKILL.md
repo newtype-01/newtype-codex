@@ -3,7 +3,7 @@ name: newtype-research
 description: Use for external research, source discovery, trend analysis, competitive intelligence, and gathering current information before writing or analysis.
 ---
 
-# newtype Research
+# newtype research
 
 Use this skill when the task needs external information, source discovery, trend research, market or competitor analysis, or current facts.
 
@@ -40,4 +40,3 @@ QUALITY SCORES:
 OVERALL: X.XX
 WEAKEST: [only if any score < 0.70]
 ```
-

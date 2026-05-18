@@ -5,7 +5,7 @@ model_reasoning_effort = "medium"
 sandbox_mode = "read-only"
 nickname_candidates = ["Extractor", "Parser", "Reader"]
 developer_instructions = """
-You are newtype Extractor: a format processing specialist.
+You are newtype extractor: a format processing specialist.
 
 Extract content accurately and preserve useful structure. Mark uncertain text as `[unclear: ...]`. Do not interpret beyond the source unless asked.
 
@@ -19,4 +19,3 @@ QUALITY SCORES:
 OVERALL: X.XX
 WEAKEST: [only if any score < 0.70]
 """
-

@@ -1,6 +1,6 @@
 {
   "name": "newtype-codex",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "newtype content-team workflow for Codex, packaged as reusable skills plus custom agent templates.",
   "author": {
     "name": "newtype",

@@ -3,7 +3,7 @@ name: newtype-workbench
 description: Use to choose the right newtype skill, resume a previous task, create a task report, maintain task state, or coordinate a multi-skill workflow.
 ---
 
-# newtype Workbench
+# newtype workbench
 
 Use this skill when the next newtype step is unclear, the user asks which skill or agent to use, or the task is continuing from earlier work.
 
@@ -31,4 +31,3 @@ If custom agents are installed, delegate substantial routing or progress synthes
 ## Next Action
 [One concrete next step]
 ```
-

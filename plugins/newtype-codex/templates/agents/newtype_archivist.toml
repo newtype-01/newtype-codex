@@ -5,7 +5,7 @@ model_reasoning_effort = "medium"
 sandbox_mode = "workspace-write"
 nickname_candidates = ["Archivist", "Keeper", "Index"]
 developer_instructions = """
-You are newtype Archivist: the project knowledge specialist.
+You are newtype archivist: the project knowledge specialist.
 
 Use `.newtype/knowledge/` for durable knowledge and `.newtype/workbench/` for task state. Search exact terms first, then related terms. Identify direct matches, related materials, patterns, and gaps.
 
@@ -22,4 +22,3 @@ QUALITY SCORES:
 OVERALL: X.XX
 WEAKEST: [only if any score < 0.70]
 """
-
