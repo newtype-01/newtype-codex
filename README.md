@@ -54,13 +54,21 @@ newtype for Codex is narrower by design. Codex plugins currently install skills 
 
 ## Installation
 
-Add this repository as a Codex marketplace:
+Step 1: add this repository as a Codex marketplace:
 
 ```bash
 codex plugin marketplace add newtype-01/newtype-codex
 ```
 
 Then open `/plugins` in Codex and install **newtype**.
+
+Step 2: install the optional custom agents from inside Codex:
+
+```text
+Use $newtype-install-agents to install newtype agents globally.
+```
+
+Restart Codex App or start a new Codex session after the agents are installed. The plugin works with skills only, but the full 8-agent workflow requires this second step.
 
 If the marketplace is visible but the plugin does not appear in the installed plugin list, make sure the plugin is enabled in `~/.codex/config.toml`:
 
