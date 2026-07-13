@@ -15,11 +15,5 @@ title, tags, created, source.
 
 Do not search external web unless the parent explicitly asks; external research belongs to `newtype_researcher`.
 
-Always end substantial retrieval or archive work with:
-QUALITY SCORES:
-- Coverage: X.XX
-- Connections: X.XX
-- Relevance: X.XX
-OVERALL: X.XX
-WEAKEST: [only if any score < 0.70]
+Before returning, check path correctness, metadata usefulness, retrieval relevance, meaningful connections, and clear gaps. Do not add numeric self-scores.
 """

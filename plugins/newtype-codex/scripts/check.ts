@@ -3,10 +3,22 @@ import path from "node:path"
 
 const repo = path.resolve(import.meta.dir, "..", "..", "..")
 const plugin = path.join(repo, "plugins", "newtype-codex")
+const expectedSkills = ["newtype-chief"]
+const expectedAgents = [
+  "newtype_archivist.toml",
+  "newtype_chief.toml",
+  "newtype_deputy.toml",
+  "newtype_editor.toml",
+  "newtype_extractor.toml",
+  "newtype_fact_checker.toml",
+  "newtype_researcher.toml",
+  "newtype_writer.toml",
+]
 
 async function json(file: string) {
-  JSON.parse(await Bun.file(file).text())
+  const value = JSON.parse(await Bun.file(file).text())
   console.log(`json ok ${path.relative(repo, file)}`)
+  return value
 }
 
 function exists(file: string) {
@@ -16,8 +28,13 @@ function exists(file: string) {
 
 async function skill(file: string) {
   const text = await Bun.file(file).text()
-  if (!/^---\nname: .+\ndescription: .+\n---/s.test(text)) {
+  const frontmatter = text.match(/^---\n([\s\S]*?)\n---/)
+  if (!frontmatter) {
     throw new Error(`invalid skill frontmatter: ${path.relative(repo, file)}`)
+  }
+  const parsed = Bun.YAML.parse(frontmatter[1]) as { name?: unknown; description?: unknown }
+  if (typeof parsed.name !== "string" || typeof parsed.description !== "string") {
+    throw new Error(`skill frontmatter needs string name and description: ${path.relative(repo, file)}`)
   }
   console.log(`skill ok ${path.relative(repo, file)}`)
 }
@@ -34,8 +51,12 @@ async function toml(file: string) {
 
 async function metadata(file: string) {
   const text = await Bun.file(file).text()
+  Bun.YAML.parse(text)
   if (!/^\s*display_name:\s*"newtype /m.test(text)) {
     throw new Error(`missing lowercase display_name: ${path.relative(repo, file)}`)
+  }
+  if (!/default_prompt:.*\$newtype-chief/m.test(text)) {
+    throw new Error(`missing newtype-chief default prompt: ${path.relative(repo, file)}`)
   }
   console.log(`metadata ok ${path.relative(repo, file)}`)
 }
@@ -73,34 +94,64 @@ async function models() {
   console.log("model ok future gpt ranking")
 }
 
-await json(path.join(repo, ".agents", "plugins", "marketplace.json"))
-await json(path.join(plugin, ".codex-plugin", "plugin.json"))
+const marketplace = await json(path.join(repo, ".agents", "plugins", "marketplace.json"))
+const manifest = await json(path.join(plugin, ".codex-plugin", "plugin.json"))
+if (marketplace.plugins?.filter((entry: { name?: string }) => entry.name === "newtype-codex").length !== 1) {
+  throw new Error("marketplace must contain exactly one newtype-codex entry")
+}
+if (manifest.version !== "0.2.0") throw new Error("plugin version must be 0.2.0")
+if (!Array.isArray(manifest.interface?.defaultPrompt) || manifest.interface.defaultPrompt.length > 3) {
+  throw new Error("plugin defaultPrompt must contain at most three entries")
+}
+
 exists(path.join(plugin, "references", "newtype-agent-workflow.md"))
 exists(path.join(plugin, "assets", "composer-icon.svg"))
 exists(path.join(plugin, "assets", "logo.svg"))
 
 const brand = new RegExp(`${"New"}${"type"}|${"NEW"}${"TYPE"}`)
+const forbiddenScores = new RegExp(
+  `${"QUALITY"} ${"SCORES"}:|${"OVER"}${"ALL"}:\\s*X\\.XX|${"WEAK"}${"EST"}:`,
+)
+const legacyInvocations = /\$newtype-(archive|edit|extract|fact-check|install-agents|research|workbench|write)\b/
 
 for await (const file of new Bun.Glob("**/*.{md,json,toml,ts,svg,yaml,yml}").scan({ cwd: repo, absolute: true })) {
   if (file.includes("node_modules")) continue
   const text = await Bun.file(file).text()
-  if (brand.test(text)) {
-    throw new Error(`brand case violation: ${path.relative(repo, file)}`)
-  }
+  if (brand.test(text)) throw new Error(`brand case violation: ${path.relative(repo, file)}`)
+  if (forbiddenScores.test(text)) throw new Error(`user-visible numeric self-score: ${path.relative(repo, file)}`)
+  if (legacyInvocations.test(text)) throw new Error(`legacy skill invocation: ${path.relative(repo, file)}`)
 }
-console.log("brand ok newtype")
+console.log("content ok brand, quality gate, and legacy invocations")
 await models()
 
+const skillNames: string[] = []
 for await (const file of new Bun.Glob("*/SKILL.md").scan({ cwd: path.join(plugin, "skills"), absolute: true })) {
+  skillNames.push(path.basename(path.dirname(file)))
   await skill(file)
 }
+skillNames.sort()
+if (JSON.stringify(skillNames) !== JSON.stringify(expectedSkills)) {
+  throw new Error(`expected skills ${expectedSkills.join(", ")}; got ${skillNames.join(", ")}`)
+}
 
+const metadataFiles: string[] = []
 for await (const file of new Bun.Glob("*/agents/openai.yaml").scan({ cwd: path.join(plugin, "skills"), absolute: true })) {
+  metadataFiles.push(path.basename(path.dirname(path.dirname(file))))
   await metadata(file)
 }
-
-for await (const file of new Bun.Glob("*.toml").scan({ cwd: path.join(plugin, "templates", "agents"), absolute: true })) {
-  await toml(file)
+metadataFiles.sort()
+if (JSON.stringify(metadataFiles) !== JSON.stringify(expectedSkills)) {
+  throw new Error(`expected metadata for ${expectedSkills.join(", ")}; got ${metadataFiles.join(", ")}`)
 }
 
-console.log("newtype-codex check passed")
+const agentFiles: string[] = []
+for await (const file of new Bun.Glob("*.toml").scan({ cwd: path.join(plugin, "templates", "agents"), absolute: true })) {
+  agentFiles.push(path.basename(file))
+  await toml(file)
+}
+agentFiles.sort()
+if (JSON.stringify(agentFiles) !== JSON.stringify(expectedAgents)) {
+  throw new Error(`expected eight agent templates; got ${agentFiles.join(", ")}`)
+}
+
+console.log("newtype-codex check passed: 1 skill + 8 agents")

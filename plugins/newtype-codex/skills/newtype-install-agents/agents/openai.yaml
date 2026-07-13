@@ -1,3 +1,0 @@
-interface:
-  display_name: "newtype install agents"
-  short_description: "Install or refresh newtype Codex custom agents globally or for a project."

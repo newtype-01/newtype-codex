@@ -14,20 +14,18 @@ Created by [huangyihe](https://x.com/huangyihe).
 
 newtype for Codex packages the core newtype OS content workflow as a Codex plugin.
 
-At its core, newtype OS is an **8-agent multi-layer orchestration system** built for content production. Think of it as **a content team living inside your AI coding environment**. Chief talks to you and coordinates the work; specialist agents handle research, fact-checking, retrieval, extraction, writing, and editing.
+At its core, newtype OS is an **8-agent content-team system** built for content production. Think of it as **a content team living inside your AI coding environment**. Chief talks to you, performs Codex-level dispatch, and owns final synthesis; Deputy plans, decomposes, and advises on routing; specialist agents handle research, fact-checking, retrieval, extraction, writing, and editing.
 
 ```text
 You ↔ Chief (Editor-in-Chief)
-          ↓
-      Deputy
-          ↓
-      Researcher · Fact-Checker · Archivist · Extractor · Writer · Editor
+       ├─ Deputy (planning / routing advice)
+       └─ Researcher · Fact-Checker · Archivist · Extractor · Writer · Editor (execution)
 ```
 
 This repository is the **Codex plugin edition**. It keeps the newtype content-team workflow, but uses Codex-native primitives:
 
 - Codex plugins for distribution.
-- Codex skills for reusable workflow instructions.
+- One Codex skill as the team's operating manual and orchestration entrypoint.
 - Codex custom agents for specialist roles.
 - Project-local `.newtype/knowledge/` and `.newtype/workbench/` conventions for knowledge and task state.
 
@@ -50,7 +48,7 @@ It intentionally leaves out OpenCode-specific integration such as the OpenCode T
 
 `@newtype-os/plugin` is the OpenCode plugin edition. It adds the newtype agent team to an existing OpenCode installation.
 
-newtype for Codex is narrower by design. Codex plugins currently install skills automatically, but they do not run post-install scripts that copy custom agents into Codex config. Custom subagents are still `.codex/agents/*.toml` files. This repository therefore ships both: the plugin installs newtype skills, and the included installer writes newtype custom agent templates into Codex config.
+newtype for Codex is narrower by design. The plugin installs one `newtype-chief` Skill automatically, while the included installer writes eight optional custom-agent templates into Codex config.
 
 ## Installation
 
@@ -65,10 +63,10 @@ Then open `/plugins` in Codex and install **newtype**.
 Step 2: install the optional custom agents from inside Codex:
 
 ```text
-Use $newtype-install-agents to install newtype agents globally.
+Use $newtype-chief to install newtype agents globally.
 ```
 
-Restart Codex App or start a new Codex session after the agents are installed. The plugin works with skills only, but the full 8-agent workflow requires this second step.
+Restart Codex App or start a new Codex session after the agents are installed. Chief can provide a minimal fallback without them, but the full 8-agent workflow requires this second step.
 
 If the marketplace is visible but the plugin does not appear in the installed plugin list, make sure the plugin is enabled in `~/.codex/config.toml`:
 
@@ -83,27 +81,19 @@ Restart Codex App after changing the config or upgrading the marketplace:
 codex plugin marketplace upgrade newtype
 ```
 
-After installation, Codex can use these skills:
+After installation, Codex exposes one Skill:
 
 | Skill | Use when |
 | --- | --- |
-| `newtype-chief` | Main newtype workflow, content-team orchestration, and role selection |
-| `newtype-research` | External research, source discovery, trends, and competitive analysis |
-| `newtype-fact-check` | Claim verification, citation checks, and source credibility |
-| `newtype-write` | Drafting articles, newsletters, reports, scripts, and long-form content |
-| `newtype-edit` | Editing for structure, clarity, logic, tone, and polish |
-| `newtype-extract` | Extracting clean Markdown or structured data from files, images, pages, and documents |
-| `newtype-archive` | Searching, organizing, or storing project knowledge under `.newtype/knowledge/` |
-| `newtype-workbench` | Choosing the next newtype skill, resuming tasks, and reporting progress |
-| `newtype-install-agents` | Installing or refreshing the optional newtype custom agents |
+| `newtype-chief` | Explore ideas, route or resume content work, coordinate the team, manage project knowledge, or install the optional agents |
 
-You can invoke the workflow directly in Codex, for example:
+Invoke it directly, for example:
 
 ```text
 Use $newtype-chief to research this topic and draft an outline.
-Use $newtype-fact-check to verify the claims in this article.
-Use $newtype-workbench to continue the previous content task.
-Use $newtype-install-agents to install newtype agents globally.
+Use $newtype-chief to verify and improve the claims in this article.
+Use $newtype-chief to continue the previous content task.
+Use $newtype-chief to install newtype agents globally.
 ```
 
 ## Custom agents
@@ -112,13 +102,13 @@ For the full newtype role experience, install the Codex custom agents as well.
 
 This cannot currently be done automatically by the Codex plugin installer: plugin install does not execute arbitrary setup scripts. The included installer copies the agent templates into `~/.codex/agents/` or a project `.codex/agents/`, where Codex can use them as custom agents.
 
-The recommended path is to run the setup skill inside Codex after installing the plugin:
+The recommended path is to ask Chief after installing the plugin:
 
 ```text
-Use $newtype-install-agents to install newtype agents globally.
+Use $newtype-chief to install newtype agents globally.
 ```
 
-That skill runs the installer from the installed plugin cache, so users do not need to clone this repository.
+Chief runs the installer from the installed plugin cache, so users do not need to clone this repository.
 
 Manual local development path:
 
@@ -139,7 +129,7 @@ Install agents globally:
 bun run install:agents -- --global
 ```
 
-After the agents are installed, invoking `$newtype-chief` is intended to act as the newtype orchestration entrypoint. For substantial content workflows, Chief should coordinate the installed specialist agents without requiring you to repeat "multi-agent" or "delegate" in every prompt.
+After the agents are installed, invoking `$newtype-chief` is intended to act as the newtype orchestration entrypoint. For substantial content workflows, Chief should coordinate the installed specialist agents without requiring you to repeat "multi-agent" or "delegate" in every prompt. In the Codex edition, Deputy is a planning and routing-advice layer; actual subagent dispatch still happens from Chief's parent Codex session.
 
 If agents do not appear immediately after installation, restart Codex App or start a new Codex session so the agent directory is reloaded.
 
@@ -148,7 +138,7 @@ Installed agent names:
 | Agent | Responsibility |
 | --- | --- |
 | `newtype_chief` | Thought partner and content workflow coordinator |
-| `newtype_deputy` | Deputy editor and execution dispatcher |
+| `newtype_deputy` | Deputy editor, workflow planner, and routing advisor |
 | `newtype_researcher` | External intelligence gathering and source discovery |
 | `newtype_fact_checker` | Claim verification and source credibility assessment |
 | `newtype_writer` | Draft creation from briefs, notes, and research |
@@ -156,7 +146,7 @@ Installed agent names:
 | `newtype_extractor` | PDF, image, web page, and document extraction |
 | `newtype_archivist` | Project knowledge search and `.newtype/knowledge/` maintenance |
 
-`newtype-workbench` remains a skill for routing, task continuation, and progress reporting; it is not a custom agent.
+Task continuation and Workbench state are handled by Chief through `.newtype/workbench/`.
 
 ## Model selection
 
@@ -174,7 +164,7 @@ It then automatically detects visible `gpt-*` models and sorts them by numeric v
 | Strong specialists | Highest visible general `gpt-*` model |
 | Fast utility roles | Highest visible `gpt-*` model with `mini`, `spark`, `fast`, `lite`, or `nano`; falls back to the highest general model |
 
-If model detection is disabled or unavailable, the script uses conservative fallbacks: `gpt-5.5` for Chief, `gpt-5.4` for strong specialists, and `gpt-5.4-mini` for fast utility roles.
+If model detection is unavailable, use `--inherit-model` to inherit the parent Codex session model.
 
 List models visible to Codex:
 
@@ -188,14 +178,7 @@ Avoid fixed model names and inherit the current Codex session model:
 bun run install:agents -- --inherit-model
 ```
 
-Override model choices manually. Environment variables always take precedence over automatic detection:
-
-```bash
-newtype_codex_chief_model=gpt-5.4 \
-newtype_codex_strong_model=gpt-5.4 \
-newtype_codex_fast_model=gpt-5.4-mini \
-bun run install:agents
-```
+Explicit model overrides remain available through `newtype_codex_chief_model`, `newtype_codex_strong_model`, and `newtype_codex_fast_model`; environment variables take precedence over automatic detection.
 
 ## Features
 
@@ -204,7 +187,7 @@ bun run install:agents
 | Agent | Role | Responsibility |
 | --- | --- | --- |
 | **Chief** | Editor-in-Chief | Your entry point: thought partner and task coordinator |
-| **Deputy** | Deputy editor | Execution dispatcher between Chief and specialists |
+| **Deputy** | Deputy editor | Workflow decomposition, routing advice, and handoff briefs |
 | **Researcher** | Researcher | External intelligence gathering and trend discovery |
 | **Fact-Checker** | Verifier | Fact verification and source credibility assessment |
 | **Archivist** | Archivist | Internal knowledge retrieval and correlation |
@@ -212,15 +195,15 @@ bun run install:agents
 | **Writer** | Writer | Turns source material into structured drafts |
 | **Editor** | Editor | Language polish, logic strengthening, and consistency |
 
-Workbench is provided as the `newtype-workbench` skill for routing, task continuation, and progress reports.
+The Codex edition keeps subagent orchestration one level deep: Chief can ask Deputy for a plan, then Chief dispatches specialist agents. Chief also handles task continuation and `.newtype/workbench/` state.
 
 ### Workflow examples
 
 ```text
-Use $newtype-research to gather sources on AI agent architecture trends.
-Use $newtype-write to turn this research into a newsletter draft.
-Use $newtype-edit to tighten the draft for a technical founder audience.
-Use $newtype-archive to save the final version into the project knowledge base.
+Use $newtype-chief to gather sources on AI agent architecture trends.
+Use $newtype-chief to turn this research into a newsletter draft.
+Use $newtype-chief to tighten the draft for a technical founder audience.
+Use $newtype-chief to save the final version into the project knowledge base.
 ```
 
 For larger work, start with Chief:
@@ -278,6 +261,7 @@ newtype for Codex does not currently include:
 - Automatic memory summarization.
 - WeChat bridge.
 - OpenCode session-client tools such as `chief_task`.
+- Nested dispatch where Deputy creates, waits for, or closes other custom agents.
 
 Use `@newtype-os/cli` if you want the complete integrated newtype OS experience.
 

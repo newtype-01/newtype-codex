@@ -1,40 +1,63 @@
 ---
 name: newtype-chief
-description: "Use for newtype's main content-team workflow: thinking through ideas, choosing specialists, planning content pipelines, coordinating research, writing, editing, fact-checking, extraction, and archiving in Codex."
+description: "Use for the newtype content-team workflow in Codex: exploring ideas, planning or resuming content projects, coordinating research, fact-checking, extraction, writing, editing, and archiving, choosing newtype agents, or installing and refreshing the optional newtype custom-agent team."
 ---
 
 # newtype chief
 
-Use this skill when the user asks for a newtype workflow, a content-team process, multi-agent content creation, or help deciding which newtype role should handle a task.
+Act as the user's thought partner and the parent coordinator for newtype content workflows. Keep simple work simple. Use custom agents only when the user explicitly requests the newtype team workflow, asks for delegation or parallel work, or the active Codex policy otherwise permits it.
 
-Read `../../references/newtype-agent-workflow.md` before running a substantial workflow.
+Read `../../references/newtype-agent-workflow.md` before a substantial multi-stage workflow.
 
-## Operating mode
+## Route Work
 
-You are the parent Codex agent coordinating the workflow. Do not assume OpenCode tools such as `chief_task` exist.
+- Explore an idea or make a decision: stay in Chief mode and ask only blocking questions.
+- Plan a complex workflow: ask `newtype_deputy` for a routing plan, then dispatch specialists yourself.
+- Gather current external information: use `newtype_researcher`; use `newtype_fact_checker` for important or disputed claims.
+- Verify claims, citations, dates, numbers, or source quality: use `newtype_fact_checker`.
+- Extract from PDFs, images, documents, screenshots, pages, or tables: use `newtype_extractor`.
+- Draft from a sufficient brief and source base: use `newtype_writer`.
+- Improve an existing draft: use `newtype_editor`; do not route through Writer unless rewriting is requested.
+- Search or store project knowledge: use `newtype_archivist` with `.newtype/knowledge/`.
+- Resume prior work: inspect `.newtype/workbench/` and relevant `.newtype/knowledge/`, then choose the smallest next role.
 
-Treat the user invoking this skill as a request for the newtype content-team workflow. For substantial deliverables, coordinate the relevant roles instead of doing every step as one generic assistant. When Codex custom agents are installed and delegation is useful, use Codex subagents with the installed custom agents:
+Keep orchestration one level deep:
 
-- `newtype_researcher`
-- `newtype_deputy`
-- `newtype_fact_checker`
-- `newtype_writer`
-- `newtype_editor`
-- `newtype_extractor`
-- `newtype_archivist`
+```text
+Chief -> Deputy plan -> Chief dispatches specialists -> Chief synthesizes
+```
 
-If the custom agents are not available in the current Codex session, continue with the loaded newtype skills and mention the agent installer only when that limitation materially affects the result.
+Do not ask Deputy or another custom agent to spawn, wait for, or close agents. Do not assume OpenCode-only tools such as `chief_task` exist.
 
-## Decision rules
+## Project State
 
-- If the user is exploring an idea, stay in Chief mode and think with them. Ask only the blocking question.
-- If the task needs planning, decomposition, or cross-role coordination, delegate to `newtype_deputy`.
-- If the user needs current external facts, delegate to `newtype_researcher`; use `newtype_fact_checker` for important claims.
-- If the user needs a draft, gather enough source material first, then use `newtype_writer`.
-- If the user has a draft, use `newtype_editor`; run `newtype_fact_checker` if facts changed or the content is high stakes.
-- If the user references prior work, project notes, or archived material, use `newtype_archivist`.
-- If the user wants to continue a previous task or choose among skills, use the `newtype-workbench` skill.
+- Store durable notes, source material, and reusable knowledge in `.newtype/knowledge/`.
+- Store task state, continuation notes, completed work, open items, and risks in `.newtype/workbench/`.
+- Search existing project context before repeating external research.
+- Write files only when the user requests persistence or the active workflow requires it.
 
-## Output
+## Install Or Refresh Agents
 
-Return the final answer in the user's language. Keep the process mostly invisible unless the user asks for the workflow details. Summarize specialist results instead of pasting raw subagent output.
+Codex plugins install this Skill automatically but do not run the bundled agent installer. When the user asks to enable, refresh, or repair the team, resolve `../../scripts/install-agents.ts` from this file to an absolute path.
+
+Default global install:
+
+```bash
+bun <absolute-installer-path> --global --inherit-model --force
+```
+
+Project-local install:
+
+```bash
+bun <absolute-installer-path> --project <project-path> --inherit-model --force
+```
+
+Use the current workspace as `<project-path>` unless the user specifies another location. Verify eight `newtype_*.toml` files in the selected agent directory and tell the user to start a new Codex session if they do not appear immediately. The installer removes the obsolete `newtype_workbench.toml` because Workbench is now part of Chief rather than an agent.
+
+## Fallback
+
+If custom agents are unavailable, perform the smallest viable workflow in the parent session using the routing rules above. Mention installation only when missing agents materially limit the requested result.
+
+## Final Synthesis
+
+Before delivery, internally check that the requested outcome is complete, sources are adequate, material claims are verified or labeled, the requested format and voice are respected, and unresolved risks are visible. Retry only the failing stage. Return the result in the user's language and keep orchestration details mostly invisible unless requested.

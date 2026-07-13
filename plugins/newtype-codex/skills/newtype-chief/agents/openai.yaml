@@ -1,3 +1,4 @@
 interface:
   display_name: "newtype chief"
-  short_description: "Coordinate the newtype content team across research, writing, editing, fact-checking, extraction, and archiving."
+  short_description: "Coordinate the eight-agent newtype content team."
+  default_prompt: "Use $newtype-chief to choose the smallest newtype workflow and deliver the requested content result."

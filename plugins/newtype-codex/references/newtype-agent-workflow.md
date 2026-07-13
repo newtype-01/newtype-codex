@@ -1,64 +1,51 @@
 # newtype agent workflow
 
-newtype for Codex keeps the newtype content-team roles, but uses Codex-native primitives:
-
-- Use skills for reusable workflow instructions.
-- Use custom Codex agents for specialized execution.
-- Use Codex subagents only when the user or active workflow explicitly asks for parallel or delegated agent work.
-- Keep OpenCode-only features out of the core path.
+newtype for Codex uses one orchestration Skill and eight optional custom agents.
 
 ## Roles
 
-- `newtype_chief`: thought partner and content workflow coordinator.
-- `newtype_deputy`: execution dispatcher and cross-role coordinator.
-- `newtype_researcher`: external intelligence and source discovery.
+- `newtype_chief`: parent thought partner, dispatcher, and final synthesizer.
+- `newtype_deputy`: workflow planner and routing advisor; never dispatches agents.
+- `newtype_researcher`: external research and source discovery.
 - `newtype_fact_checker`: claim verification and source credibility.
-- `newtype_writer`: draft creation from briefs and source material.
+- `newtype_writer`: draft creation from briefs and evidence.
 - `newtype_editor`: structural and language refinement.
-- `newtype_extractor`: clean extraction from files, pages, images, and documents.
-- `newtype_archivist`: project knowledge search and `.newtype/knowledge/` maintenance.
+- `newtype_extractor`: faithful extraction from source material.
+- `newtype_archivist`: `.newtype/knowledge/` retrieval and maintenance.
 
-`newtype-workbench` is a skill for routing, task continuation, and progress reporting; it is not one of the 8 custom agents.
+## Model Tiers
 
-## Model selection
+The installer resolves three capability tiers from the current Codex model catalog:
 
-- Chief: `gpt-5.5`, high reasoning.
-- Strong specialists: `gpt-5.4`, medium or high reasoning depending on risk.
-- Fast utility roles: `gpt-5.4-mini`, medium reasoning.
+- Chief: strongest available general model.
+- Strong: capable model for research, verification, writing, and editing.
+- Fast: efficient model for extraction and archiving; fall back to Strong when unavailable.
 
-The installer reads `codex debug models` when available and chooses the first matching candidate for each role. If `gpt-5.5` is unavailable in the user's Codex account, install agents with:
+Use `--inherit-model` when model portability matters more than role-specific selection. Keep concrete model candidates inside the installer rather than user-facing workflow instructions.
 
-```bash
-newtype_codex_chief_model=gpt-5.4 bun plugins/newtype-codex/scripts/install-agents.ts
-```
+## Orchestration
 
-For maximum forward compatibility, omit fixed model fields entirely:
+Use the smallest workflow that can satisfy the request:
 
-```bash
-bun plugins/newtype-codex/scripts/install-agents.ts --inherit-model
-```
-
-## Recommended orchestration
-
-Use the smallest workflow that can pass the quality bar:
-
-- Discussion and decision support: Chief only, optionally the Workbench skill.
-- Complex coordination: Chief -> Deputy -> relevant specialists.
-- Current external information: Researcher, then Fact-checker for important claims.
-- Content creation: Researcher -> Fact-checker when sources matter -> Writer -> Editor -> Fact-checker for final factual review.
-- Existing draft polish: Editor, then Fact-checker if factual claims changed.
+- Discussion and decision support: Chief only.
+- Complex coordination: Chief -> Deputy plan -> Chief dispatches specialists.
+- Current information: Researcher, then Fact Checker for important claims.
+- Content creation: Researcher when needed -> Fact Checker for source-critical claims -> Writer -> Editor -> final factual check when warranted.
+- Existing draft: Editor; add Fact Checker only if facts changed or risk is high.
 - Existing project context: Archivist before external research.
-- Resuming work: Workbench skill first, then the relevant role.
+- Source extraction: Extractor before analysis or drafting.
 
-## Quality gate
+Keep dispatch one level deep. Agents return focused artifacts to Chief; Chief owns retries, synthesis, and the final user response.
 
-Every specialist response should end with:
+## Internal Quality Gate
 
-```text
-QUALITY SCORES:
-- Dimension: 0.00-1.00
-OVERALL: 0.00-1.00
-WEAKEST: dimension name, only if below 0.70
-```
+Do not emit numeric self-scores. Check the artifact against task-specific acceptance criteria instead:
 
-When `OVERALL` is below 0.70, retry or narrow the task before delivering.
+- Research: sufficient authoritative sources, contradictions, and gaps.
+- Fact-check: claim coverage, evidence quality, verdicts, and concrete fixes.
+- Extraction: fidelity, completeness, structure, and uncertainty markers.
+- Writing: brief compliance, structure, grounding, and completeness.
+- Editing: preserved intent, stronger logic, cleaner prose, and no invented facts.
+- Archive: correct paths, useful metadata, retrieval relevance, and no unsupported external claims.
+
+If a required criterion fails, Chief retries or narrows that stage before delivery.

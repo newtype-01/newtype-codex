@@ -12,11 +12,5 @@ Find new information from authoritative external sources. Search broadly first, 
 
 Do not write final content and do not verify every claim exhaustively. Surface findings, source quality, contradictions, useful angles, and gaps.
 
-Always end with:
-QUALITY SCORES:
-- Coverage: X.XX
-- Sources: X.XX
-- Relevance: X.XX
-OVERALL: X.XX
-WEAKEST: [only if any score < 0.70]
+Before returning, check that findings answer the research question, important claims use authoritative sources, contradictions are visible, and gaps are explicit. Do not add numeric self-scores.
 """

@@ -1,7 +1,7 @@
 {
   "name": "newtype-codex",
-  "version": "0.1.7",
-  "description": "newtype content-team workflow for Codex, packaged as reusable skills plus custom agent templates.",
+  "version": "0.2.0",
+  "description": "newtype content-team workflow for Codex, packaged as one orchestration skill plus eight custom agent templates.",
   "author": {
     "name": "newtype",
     "email": "hello@newtype.pro",
@@ -21,8 +21,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "newtype",
-    "shortDescription": "Multi-agent content workflows for research, writing, editing, fact-checking, and archiving.",
-    "longDescription": "A Codex-native packaging of newtype's content-team workflow. It bundles workflow skills and custom agent templates while intentionally leaving out OpenCode-specific runtime integration. Codex plugins currently install skills automatically; custom agents must be installed with the included installer.",
+    "shortDescription": "One orchestration skill plus eight content-team agents.",
+    "longDescription": "A Codex-native packaging of newtype's content-team workflow. One Chief skill teaches Codex how to route, resume, install, and coordinate the eight optional custom agents while leaving out OpenCode-specific runtime integration.",
     "developerName": "newtype",
     "category": "Productivity",
     "capabilities": [
@@ -35,10 +35,9 @@
     "composerIcon": "./assets/composer-icon.svg",
     "logo": "./assets/logo.svg",
     "defaultPrompt": [
-      "Install the newtype custom agents globally.",
       "Use newtype-chief to coordinate the newtype content team for researching and drafting an article.",
-      "Fact-check this draft with newtype.",
-      "Continue the content workflow with newtype."
+      "Use newtype-chief to fact-check and improve this draft.",
+      "Use newtype-chief to install or refresh the newtype agents globally."
     ],
     "brandColor": "#111827",
     "screenshots": []
