@@ -1,4 +1,5 @@
 import { existsSync } from "node:fs"
+import { rm } from "node:fs/promises"
 import path from "node:path"
 
 const repo = path.resolve(import.meta.dir, "..", "..", "..")
@@ -94,12 +95,71 @@ async function models() {
   console.log("model ok future gpt ranking")
 }
 
+async function bootstrap() {
+  const project = "/private/tmp/newtype-codex-bootstrap-check"
+  const installer = path.join(plugin, "scripts", "install-agents.ts")
+  await rm(project, { recursive: true, force: true })
+
+  const before = Bun.spawn(["bun", installer, "--status", "--project", project], {
+    stdout: "pipe",
+    stderr: "pipe",
+  })
+  const beforeOutput = await new Response(before.stderr).text()
+  if (await before.exited === 0 || !beforeOutput.includes("newtype agents missing")) {
+    throw new Error("missing agents must fail the first-use status check")
+  }
+
+  const install = Bun.spawn(["bun", installer, "--project", project, "--inherit-model", "--force"], {
+    stdout: "pipe",
+    stderr: "pipe",
+  })
+  const installOutput = await new Response(install.stdout).text()
+  if (await install.exited !== 0 || !installOutput.includes(".newtype-codex-agents.json")) {
+    throw new Error("first-use install did not write the version marker")
+  }
+
+  const marker = await Bun.file(path.join(project, ".codex", "agents", ".newtype-codex-agents.json")).json()
+  if (marker.pluginVersion !== "0.2.1" || marker.modelStrategy !== "inherit" || marker.agents?.length !== 8) {
+    throw new Error("invalid agent version marker")
+  }
+
+  const markerPath = path.join(project, ".codex", "agents", ".newtype-codex-agents.json")
+  await Bun.write(markerPath, JSON.stringify({ ...marker, pluginVersion: "0.2.0" }, null, 2) + "\n")
+  const stale = Bun.spawn(["bun", installer, "--status", "--project", project], {
+    stdout: "pipe",
+    stderr: "pipe",
+  })
+  const staleOutput = await new Response(stale.stderr).text()
+  if (await stale.exited === 0 || !staleOutput.includes("installed=0.2.0, plugin=0.2.1")) {
+    throw new Error("outdated agents must fail the version status check")
+  }
+
+  const refresh = Bun.spawn(["bun", installer, "--project", project, "--inherit-model", "--force"], {
+    stdout: "pipe",
+    stderr: "pipe",
+  })
+  await new Response(refresh.stdout).text()
+  if (await refresh.exited !== 0) throw new Error("outdated agents could not be refreshed")
+
+  const after = Bun.spawn(["bun", installer, "--status", "--project", project], {
+    stdout: "pipe",
+    stderr: "pipe",
+  })
+  const afterOutput = await new Response(after.stdout).text()
+  if (await after.exited !== 0 || !afterOutput.includes("agents are current for plugin 0.2.1")) {
+    throw new Error("installed agents must pass the version status check")
+  }
+
+  await rm(project, { recursive: true, force: true })
+  console.log("bootstrap ok missing -> install -> stale -> refresh -> current")
+}
+
 const marketplace = await json(path.join(repo, ".agents", "plugins", "marketplace.json"))
 const manifest = await json(path.join(plugin, ".codex-plugin", "plugin.json"))
 if (marketplace.plugins?.filter((entry: { name?: string }) => entry.name === "newtype-codex").length !== 1) {
   throw new Error("marketplace must contain exactly one newtype-codex entry")
 }
-if (manifest.version !== "0.2.0") throw new Error("plugin version must be 0.2.0")
+if (manifest.version !== "0.2.1") throw new Error("plugin version must be 0.2.1")
 if (!Array.isArray(manifest.interface?.defaultPrompt) || manifest.interface.defaultPrompt.length > 3) {
   throw new Error("plugin defaultPrompt must contain at most three entries")
 }
@@ -123,6 +183,7 @@ for await (const file of new Bun.Glob("**/*.{md,json,toml,ts,svg,yaml,yml}").sca
 }
 console.log("content ok brand, quality gate, and legacy invocations")
 await models()
+await bootstrap()
 
 const skillNames: string[] = []
 for await (const file of new Bun.Glob("*/SKILL.md").scan({ cwd: path.join(plugin, "skills"), absolute: true })) {
@@ -132,6 +193,11 @@ for await (const file of new Bun.Glob("*/SKILL.md").scan({ cwd: path.join(plugin
 skillNames.sort()
 if (JSON.stringify(skillNames) !== JSON.stringify(expectedSkills)) {
   throw new Error(`expected skills ${expectedSkills.join(", ")}; got ${skillNames.join(", ")}`)
+}
+
+const chiefSkill = await Bun.file(path.join(plugin, "skills", "newtype-chief", "SKILL.md")).text()
+if (!chiefSkill.includes("--status --global") || !chiefSkill.includes("First-Use Bootstrap")) {
+  throw new Error("newtype-chief must include first-use agent bootstrap")
 }
 
 const metadataFiles: string[] = []
@@ -154,4 +220,4 @@ if (JSON.stringify(agentFiles) !== JSON.stringify(expectedAgents)) {
   throw new Error(`expected eight agent templates; got ${agentFiles.join(", ")}`)
 }
 
-console.log("newtype-codex check passed: 1 skill + 8 agents")
+console.log("newtype-codex check passed: 1 skill + 8 agents + first-use bootstrap")

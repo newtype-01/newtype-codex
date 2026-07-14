@@ -60,13 +60,13 @@ codex plugin marketplace add newtype-01/newtype-codex
 
 然后在 Codex 的 `/plugins` 中安装 **newtype**。
 
-步骤 2：在 Codex 内安装可选的 custom agents：
+步骤2：正常调用Chief。第一次显式使用时，Chief会检查可选的custom agents是否存在且版本一致：
 
 ```text
-Use $newtype-chief to install newtype agents globally.
+Use $newtype-chief to help me plan this content project.
 ```
 
-agents 安装后，请重启 Codex App 或开启一个新的 Codex 会话。没有 agents 时 Chief 可以执行最小可行流程；完整8-agent工作流需要执行这一步。
+如果团队缺失或版本过旧，Chief会说明一次性设置、请求权限，并使用父模型继承方式安装八个全局Agents。安装后请重启Codex App或开启新会话。如果用户拒绝设置，或当前任务需要立即继续，Chief仍可执行最小可行流程。
 
 如果 marketplace 已经能看到，但已安装插件列表里没有 newtype，请确认 `~/.codex/config.toml` 里有启用项：
 
@@ -93,22 +93,22 @@ codex plugin marketplace upgrade newtype
 Use $newtype-chief to research this topic and draft an outline.
 Use $newtype-chief to verify and improve the claims in this article.
 Use $newtype-chief to continue the previous content task.
-Use $newtype-chief to install newtype agents globally.
+Use $newtype-chief to help me plan this content project.
 ```
 
 ## 安装自定义 Agents
 
 如果想获得完整的 newtype 角色体验，还需要安装 Codex custom agents。
 
-这一步目前不能由 Codex plugin 安装器自动完成：插件安装不会执行任意 setup 脚本。仓库内置的安装器会把 agent 模板复制到 `~/.codex/agents/` 或项目 `.codex/agents/`，复制后 Codex 可以把它们作为 custom agents 使用。
+Codex plugin安装器不能执行任意setup脚本，因此不会在安装插件时直接写入Agents。第一次显式调用`$newtype-chief`时，Chief会先运行只读状态检查；如果团队缺失或版本过旧，再请求权限并把模板复制到`~/.codex/agents/`，随后Codex即可把它们作为custom agents使用。
 
-推荐方式是在 Codex 中直接让 Chief 执行安装：
+推荐方式是安装插件后直接正常使用Chief：
 
 ```text
-Use $newtype-chief to install newtype agents globally.
+Use $newtype-chief to research this topic and propose an outline.
 ```
 
-Chief 会从已安装的 plugin 缓存目录运行内置安装器，所以普通用户不需要 clone 仓库。
+Chief会从已安装的plugin缓存目录运行状态检查，并在需要时运行内置安装器，所以普通用户不需要clone仓库，也不需要记住安装命令。安装器会在Agent文件旁写入`.newtype-codex-agents.json`；以后插件升级时，Chief通过这个标记判断团队是否需要刷新。
 
 本地开发时也可以手动运行：
 
@@ -120,13 +120,19 @@ cd newtype-codex
 安装到指定项目：
 
 ```bash
-bun run install:agents -- --project /path/to/your/project
+bun run install:agents -- --project /path/to/your/project --inherit-model --force
 ```
 
 全局安装：
 
 ```bash
-bun run install:agents -- --global
+bun run install:agents -- --global --inherit-model --force
+```
+
+检查全局Agents是否与当前插件版本一致：
+
+```bash
+bun plugins/newtype-codex/scripts/install-agents.ts --status --global
 ```
 
 Agents 安装完成后，调用 `$newtype-chief` 就应该被视为 newtype 编排入口。对于较大的内容工作流，Chief 应该主动协调已安装的专家 agents，而不需要你每次都额外写“多 Agent 协作”或 “delegate”。Codex 版里 Deputy 是规划和路由建议层；真实的 subagent 派发仍由 Chief 所在的父 Codex 会话执行。
@@ -164,7 +170,7 @@ codex debug models
 | Strong specialists | 当前可见的最高通用 `gpt-*` 模型 |
 | Fast utility roles | 当前可见的最高 `mini`、`spark`、`fast`、`lite` 或 `nano` 轻量 `gpt-*` 模型；没有轻量模型时回退到最高通用模型 |
 
-如果模型检测不可用，推荐使用`--inherit-model`继承父Codex会话模型。
+Chief的首次设置会使用`--inherit-model`，因此八个Agents都会自动继承父Codex会话模型。手动安装且不带该参数时，才使用下面的分档模型检测。
 
 查看 Codex 当前可见模型：
 

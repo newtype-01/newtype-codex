@@ -9,6 +9,19 @@ Act as the user's thought partner and the parent coordinator for newtype content
 
 Read `../../references/newtype-agent-workflow.md` before a substantial multi-stage workflow.
 
+## First-Use Bootstrap
+
+On the first explicit `$newtype-chief` invocation in a Codex session, or before the first delegated newtype workflow, resolve `../../scripts/install-agents.ts` from this file to an absolute path and run this read-only check:
+
+```bash
+bun <absolute-installer-path> --status --global
+```
+
+- If the check passes, continue silently and do not reinstall.
+- If it reports missing or outdated agents, explain that the full team needs a one-time setup, request approval, and run `bun <absolute-installer-path> --global --inherit-model --force`.
+- After installation, tell the user to restart Codex or start a new session before delegated work. If the user declines or wants to continue immediately, use the Chief-only fallback for the current task.
+- Do not block a simple Chief-only discussion when agent setup is unnecessary.
+
 ## Route Work
 
 - Explore an idea or make a decision: stay in Chief mode and ask only blocking questions.
@@ -53,6 +66,8 @@ bun <absolute-installer-path> --project <project-path> --inherit-model --force
 ```
 
 Use the current workspace as `<project-path>` unless the user specifies another location. Verify eight `newtype_*.toml` files in the selected agent directory and tell the user to start a new Codex session if they do not appear immediately. The installer removes the obsolete `newtype_workbench.toml` because Workbench is now part of Chief rather than an agent.
+
+The installer writes `.newtype-codex-agents.json` beside the agent files. Use `--status` to compare that marker with the installed plugin version instead of guessing from filenames alone.
 
 ## Fallback
 

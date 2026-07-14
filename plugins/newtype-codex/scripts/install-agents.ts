@@ -5,12 +5,17 @@ import path from "node:path"
 
 const root = path.resolve(import.meta.dir, "..")
 const templates = path.join(root, "templates", "agents")
+const manifest = await Bun.file(path.join(root, ".codex-plugin", "plugin.json")).json() as { version?: string }
+if (!manifest.version) throw new Error("plugin manifest is missing a version")
+const pluginVersion = manifest.version
+const markerName = ".newtype-codex-agents.json"
 
 const args = Bun.argv.slice(2)
 const dry = args.includes("--dry-run")
 const force = args.includes("--force")
 const global = args.includes("--global")
 const inherit = args.includes("--inherit-model")
+const status = args.includes("--status")
 const detect = !args.includes("--no-detect-models")
 const list = args.includes("--list-models")
 const projectIndex = args.indexOf("--project")
@@ -36,6 +41,7 @@ function usage() {
   console.log(`Usage: bun plugins/newtype-codex/scripts/install-agents.ts [--global] [--project <dir>] [--dry-run] [--force] [--inherit-model]
 
 Options:
+  --status            Check whether all agents match the installed plugin version
   --list-models       Print Codex model slugs from "codex debug models" and exit
   --no-detect-models  Skip Codex model catalog detection and use fallback models
   --inherit-model     Omit model fields so custom agents inherit the parent Codex session model
@@ -58,6 +64,36 @@ if (args.includes("--help") || args.includes("-h")) {
 if (projectIndex >= 0 && !project) {
   console.error("Missing value for --project")
   process.exit(1)
+}
+
+const files = (await Array.fromAsync(new Bun.Glob("*.toml").scan({ cwd: templates }))).sort()
+
+if (status) {
+  const missing = files.filter((file) => !existsSync(path.join(target, file)))
+  if (missing.length > 0) {
+    console.error(`newtype agents missing: ${missing.join(", ")}`)
+    process.exit(2)
+  }
+
+  const markerPath = path.join(target, markerName)
+  if (!existsSync(markerPath)) {
+    console.error("newtype agents need refresh: version marker missing")
+    process.exit(2)
+  }
+
+  try {
+    const installed = await Bun.file(markerPath).json() as { pluginVersion?: string }
+    if (installed.pluginVersion !== pluginVersion) {
+      console.error(`newtype agents need refresh: installed=${installed.pluginVersion ?? "unknown"}, plugin=${pluginVersion}`)
+      process.exit(2)
+    }
+  } catch (error) {
+    console.error(`newtype agents need refresh: invalid version marker (${String(error)})`)
+    process.exit(2)
+  }
+
+  console.log(`newtype agents are current for plugin ${pluginVersion}`)
+  process.exit(0)
 }
 
 async function catalog() {
@@ -153,7 +189,7 @@ for (const file of stale) {
   console.log(`removed ${out}`)
 }
 
-const files = (await Array.fromAsync(new Bun.Glob("*.toml").scan({ cwd: templates }))).sort()
+let skipped = false
 
 for (const file of files) {
   const out = path.join(target, file)
@@ -163,6 +199,7 @@ for (const file of files) {
     : Object.entries(models).reduce((value, entry) => value.replaceAll(entry[0], entry[1]), src)
 
   if (existsSync(out) && !force) {
+    skipped = true
     console.log(`skip ${out} (exists; use --force to overwrite)`)
     continue
   }
@@ -174,6 +211,24 @@ for (const file of files) {
 
   await Bun.write(out, text)
   console.log(`wrote ${out}`)
+}
+
+const markerPath = path.join(target, markerName)
+if (skipped) {
+  console.log(`skip ${markerPath} (agent files were not refreshed; use --force)`)
+} else {
+  const marker = JSON.stringify({
+    plugin: "newtype-codex",
+    pluginVersion,
+    modelStrategy: inherit ? "inherit" : "pinned",
+    agents: files,
+  }, null, 2) + "\n"
+  if (dry) {
+    console.log(`write ${markerPath}`)
+  } else {
+    await Bun.write(markerPath, marker)
+    console.log(`wrote ${markerPath}`)
+  }
 }
 
 console.log(global ? "installed global newtype Codex agents" : `installed project newtype Codex agents in ${target}`)

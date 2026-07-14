@@ -60,13 +60,13 @@ codex plugin marketplace add newtype-01/newtype-codex
 
 Then open `/plugins` in Codex and install **newtype**.
 
-Step 2: install the optional custom agents from inside Codex:
+Step 2: invoke Chief normally. On its first explicit use, Chief checks whether the optional custom agents are present and current:
 
 ```text
-Use $newtype-chief to install newtype agents globally.
+Use $newtype-chief to help me plan this content project.
 ```
 
-Restart Codex App or start a new Codex session after the agents are installed. Chief can provide a minimal fallback without them, but the full 8-agent workflow requires this second step.
+If the team is missing or outdated, Chief explains the one-time setup, requests permission, and installs the eight agents globally with parent-model inheritance. Restart Codex App or start a new Codex session after that installation. Chief can provide a minimal fallback if setup is declined or the current task should continue immediately.
 
 If the marketplace is visible but the plugin does not appear in the installed plugin list, make sure the plugin is enabled in `~/.codex/config.toml`:
 
@@ -93,22 +93,22 @@ Invoke it directly, for example:
 Use $newtype-chief to research this topic and draft an outline.
 Use $newtype-chief to verify and improve the claims in this article.
 Use $newtype-chief to continue the previous content task.
-Use $newtype-chief to install newtype agents globally.
+Use $newtype-chief to help me plan this content project.
 ```
 
 ## Custom agents
 
 For the full newtype role experience, install the Codex custom agents as well.
 
-This cannot currently be done automatically by the Codex plugin installer: plugin install does not execute arbitrary setup scripts. The included installer copies the agent templates into `~/.codex/agents/` or a project `.codex/agents/`, where Codex can use them as custom agents.
+The Codex plugin installer cannot execute arbitrary setup scripts, so it does not write agents during plugin installation. Instead, the first explicit `$newtype-chief` invocation runs a read-only status check. If the team is missing or outdated, Chief requests permission and copies the templates into `~/.codex/agents/`, where Codex can use them as custom agents.
 
-The recommended path is to ask Chief after installing the plugin:
+The recommended path is simply to use Chief after installing the plugin:
 
 ```text
-Use $newtype-chief to install newtype agents globally.
+Use $newtype-chief to research this topic and propose an outline.
 ```
 
-Chief runs the installer from the installed plugin cache, so users do not need to clone this repository.
+Chief runs the status check and, when needed, the installer from the installed plugin cache, so users do not need to clone this repository or remember an installation command. The installer writes `.newtype-codex-agents.json` beside the agent files; future plugin versions use this marker to detect when the team needs refreshing.
 
 Manual local development path:
 
@@ -120,13 +120,19 @@ cd newtype-codex
 Install agents into a specific project:
 
 ```bash
-bun run install:agents -- --project /path/to/your/project
+bun run install:agents -- --project /path/to/your/project --inherit-model --force
 ```
 
 Install agents globally:
 
 ```bash
-bun run install:agents -- --global
+bun run install:agents -- --global --inherit-model --force
+```
+
+Check whether the global agents match the installed plugin version:
+
+```bash
+bun plugins/newtype-codex/scripts/install-agents.ts --status --global
 ```
 
 After the agents are installed, invoking `$newtype-chief` is intended to act as the newtype orchestration entrypoint. For substantial content workflows, Chief should coordinate the installed specialist agents without requiring you to repeat "multi-agent" or "delegate" in every prompt. In the Codex edition, Deputy is a planning and routing-advice layer; actual subagent dispatch still happens from Chief's parent Codex session.
@@ -164,7 +170,7 @@ It then automatically detects visible `gpt-*` models and sorts them by numeric v
 | Strong specialists | Highest visible general `gpt-*` model |
 | Fast utility roles | Highest visible `gpt-*` model with `mini`, `spark`, `fast`, `lite`, or `nano`; falls back to the highest general model |
 
-If model detection is unavailable, use `--inherit-model` to inherit the parent Codex session model.
+Chief's first-use setup runs with `--inherit-model`, so all eight agents follow the parent Codex session model automatically. Manual installs without that flag use the tiered detection below.
 
 List models visible to Codex:
 
