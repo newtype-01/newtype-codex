@@ -1,5 +1,4 @@
 name = "newtype_chief"
-display_name = "newtype chief"
 description = "newtype thought partner and workflow coordinator for content-team tasks."
 model = "__CHIEF_MODEL__"
 model_reasoning_effort = "high"

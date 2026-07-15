@@ -108,7 +108,9 @@ The recommended path is simply to use Chief after installing the plugin:
 Use $newtype-chief to research this topic and propose an outline.
 ```
 
-Chief runs the status check and, when needed, the installer from the installed plugin cache, so users do not need to clone this repository or remember an installation command. The installer writes `.newtype-codex-agents.json` beside the agent files; future plugin versions use this marker to detect when the team needs refreshing.
+Chief runs the status check and, when needed, the installer from the installed plugin cache, so users do not need to clone this repository or remember an installation command. The installer writes `.newtype-codex-agents.json` beside the agent files and checks both the plugin version and the installed agent schema before treating the team as current.
+
+Agent role files follow Codex's standalone custom-agent schema: `name`, `description`, and `developer_instructions` are required, while readable UI labels come from `nickname_candidates`. Skill UI metadata still uses `display_name` in `agents/openai.yaml`; that field must not be copied into custom-agent TOML files. Version `0.2.2` repairs older newtype agent files that contained the unsupported field.
 
 Manual local development path:
 
@@ -129,7 +131,7 @@ Install agents globally:
 bun run install:agents -- --global --inherit-model --force
 ```
 
-Check whether the global agents match the installed plugin version:
+Check whether the global agents match the installed plugin version and schema:
 
 ```bash
 bun plugins/newtype-codex/scripts/install-agents.ts --status --global

@@ -1,5 +1,4 @@
 name = "newtype_deputy"
-display_name = "newtype deputy"
 description = "Deputy editor, workflow planner, and routing advisor for chief."
 model = "__STRONG_MODEL__"
 model_reasoning_effort = "medium"

@@ -1,5 +1,4 @@
 name = "newtype_researcher"
-display_name = "newtype researcher"
 description = "External intelligence gatherer for research, source discovery, trends, and competitive analysis."
 model = "__STRONG_MODEL__"
 model_reasoning_effort = "medium"

@@ -9,6 +9,7 @@ const manifest = await Bun.file(path.join(root, ".codex-plugin", "plugin.json"))
 if (!manifest.version) throw new Error("plugin manifest is missing a version")
 const pluginVersion = manifest.version
 const markerName = ".newtype-codex-agents.json"
+const requiredAgentFields = ["name", "description", "developer_instructions"]
 
 const args = Bun.argv.slice(2)
 const dry = args.includes("--dry-run")
@@ -41,7 +42,7 @@ function usage() {
   console.log(`Usage: bun plugins/newtype-codex/scripts/install-agents.ts [--global] [--project <dir>] [--dry-run] [--force] [--inherit-model]
 
 Options:
-  --status            Check whether all agents match the installed plugin version
+  --status            Check whether all agents match the plugin version and supported schema
   --list-models       Print Codex model slugs from "codex debug models" and exit
   --no-detect-models  Skip Codex model catalog detection and use fallback models
   --inherit-model     Omit model fields so custom agents inherit the parent Codex session model
@@ -68,11 +69,31 @@ if (projectIndex >= 0 && !project) {
 
 const files = (await Array.fromAsync(new Bun.Glob("*.toml").scan({ cwd: templates }))).sort()
 
+function agentFileProblems(text: string) {
+  const problems = requiredAgentFields
+    .filter((field) => !new RegExp(`^${field}\\s*=`, "m").test(text))
+    .map((field) => `missing ${field}`)
+
+  if (/^display_name\s*=/m.test(text)) {
+    problems.push("unsupported display_name")
+  }
+
+  return problems
+}
+
 if (status) {
   const missing = files.filter((file) => !existsSync(path.join(target, file)))
   if (missing.length > 0) {
     console.error(`newtype agents missing: ${missing.join(", ")}`)
     process.exit(2)
+  }
+
+  for (const file of files) {
+    const problems = agentFileProblems(await Bun.file(path.join(target, file)).text())
+    if (problems.length > 0) {
+      console.error(`newtype agents need refresh: invalid ${file} (${problems.join(", ")})`)
+      process.exit(2)
+    }
   }
 
   const markerPath = path.join(target, markerName)

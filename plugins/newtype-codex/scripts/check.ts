@@ -42,10 +42,13 @@ async function skill(file: string) {
 
 async function toml(file: string) {
   const text = await Bun.file(file).text()
-  for (const field of ["name", "display_name", "description", "developer_instructions"]) {
+  for (const field of ["name", "description", "developer_instructions"]) {
     if (!new RegExp(`^${field}\\s*=`, "m").test(text)) {
       throw new Error(`missing ${field}: ${path.relative(repo, file)}`)
     }
+  }
+  if (/^display_name\s*=/m.test(text)) {
+    throw new Error(`unsupported display_name in custom agent: ${path.relative(repo, file)}`)
   }
   console.log(`agent ok ${path.relative(repo, file)}`)
 }
@@ -119,18 +122,18 @@ async function bootstrap() {
   }
 
   const marker = await Bun.file(path.join(project, ".codex", "agents", ".newtype-codex-agents.json")).json()
-  if (marker.pluginVersion !== "0.2.1" || marker.modelStrategy !== "inherit" || marker.agents?.length !== 8) {
+  if (marker.pluginVersion !== "0.2.2" || marker.modelStrategy !== "inherit" || marker.agents?.length !== 8) {
     throw new Error("invalid agent version marker")
   }
 
   const markerPath = path.join(project, ".codex", "agents", ".newtype-codex-agents.json")
-  await Bun.write(markerPath, JSON.stringify({ ...marker, pluginVersion: "0.2.0" }, null, 2) + "\n")
+  await Bun.write(markerPath, JSON.stringify({ ...marker, pluginVersion: "0.2.1" }, null, 2) + "\n")
   const stale = Bun.spawn(["bun", installer, "--status", "--project", project], {
     stdout: "pipe",
     stderr: "pipe",
   })
   const staleOutput = await new Response(stale.stderr).text()
-  if (await stale.exited === 0 || !staleOutput.includes("installed=0.2.0, plugin=0.2.1")) {
+  if (await stale.exited === 0 || !staleOutput.includes("installed=0.2.1, plugin=0.2.2")) {
     throw new Error("outdated agents must fail the version status check")
   }
 
@@ -141,17 +144,36 @@ async function bootstrap() {
   await new Response(refresh.stdout).text()
   if (await refresh.exited !== 0) throw new Error("outdated agents could not be refreshed")
 
+  const chiefPath = path.join(project, ".codex", "agents", "newtype_chief.toml")
+  const chief = await Bun.file(chiefPath).text()
+  await Bun.write(chiefPath, chief.replace(/^name = .*$/m, (line) => `${line}\ndisplay_name = "newtype chief"`))
+  const malformed = Bun.spawn(["bun", installer, "--status", "--project", project], {
+    stdout: "pipe",
+    stderr: "pipe",
+  })
+  const malformedOutput = await new Response(malformed.stderr).text()
+  if (await malformed.exited === 0 || !malformedOutput.includes("unsupported display_name")) {
+    throw new Error("malformed agents must fail even when the version marker is current")
+  }
+
+  const repair = Bun.spawn(["bun", installer, "--project", project, "--inherit-model", "--force"], {
+    stdout: "pipe",
+    stderr: "pipe",
+  })
+  await new Response(repair.stdout).text()
+  if (await repair.exited !== 0) throw new Error("malformed agents could not be repaired")
+
   const after = Bun.spawn(["bun", installer, "--status", "--project", project], {
     stdout: "pipe",
     stderr: "pipe",
   })
   const afterOutput = await new Response(after.stdout).text()
-  if (await after.exited !== 0 || !afterOutput.includes("agents are current for plugin 0.2.1")) {
+  if (await after.exited !== 0 || !afterOutput.includes("agents are current for plugin 0.2.2")) {
     throw new Error("installed agents must pass the version status check")
   }
 
   await rm(project, { recursive: true, force: true })
-  console.log("bootstrap ok missing -> install -> stale -> refresh -> current")
+  console.log("bootstrap ok missing -> install -> stale -> refresh -> malformed -> repair -> current")
 }
 
 const marketplace = await json(path.join(repo, ".agents", "plugins", "marketplace.json"))
@@ -159,7 +181,7 @@ const manifest = await json(path.join(plugin, ".codex-plugin", "plugin.json"))
 if (marketplace.plugins?.filter((entry: { name?: string }) => entry.name === "newtype-codex").length !== 1) {
   throw new Error("marketplace must contain exactly one newtype-codex entry")
 }
-if (manifest.version !== "0.2.1") throw new Error("plugin version must be 0.2.1")
+if (manifest.version !== "0.2.2") throw new Error("plugin version must be 0.2.2")
 if (!Array.isArray(manifest.interface?.defaultPrompt) || manifest.interface.defaultPrompt.length > 3) {
   throw new Error("plugin defaultPrompt must contain at most three entries")
 }

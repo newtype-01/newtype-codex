@@ -67,7 +67,7 @@ bun <absolute-installer-path> --project <project-path> --inherit-model --force
 
 Use the current workspace as `<project-path>` unless the user specifies another location. Verify eight `newtype_*.toml` files in the selected agent directory and tell the user to start a new Codex session if they do not appear immediately. The installer removes the obsolete `newtype_workbench.toml` because Workbench is now part of Chief rather than an agent.
 
-The installer writes `.newtype-codex-agents.json` beside the agent files. Use `--status` to compare that marker with the installed plugin version instead of guessing from filenames alone.
+The installer writes `.newtype-codex-agents.json` beside the agent files. Use `--status` to check both that marker and the installed agent schema instead of guessing from filenames alone.
 
 ## Fallback
 

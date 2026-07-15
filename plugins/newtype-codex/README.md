@@ -17,7 +17,7 @@ Plugin installation loads `newtype-chief` but cannot run an arbitrary setup scri
 Use $newtype-chief to help me plan this content project.
 ```
 
-After the one-time setup, restart Codex or start a new session. Later invocations skip installation while the version marker is current.
+After the one-time setup, restart Codex or start a new session. Later invocations skip installation only while the version marker and installed agent schema are both current. Custom-agent TOML uses `nickname_candidates` for readable labels; `display_name` is reserved for Skill UI metadata in `agents/openai.yaml`.
 
 Local development:
 

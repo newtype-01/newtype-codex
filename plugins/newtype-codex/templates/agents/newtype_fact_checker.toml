@@ -1,5 +1,4 @@
 name = "newtype_fact_checker"
-display_name = "newtype fact checker"
 description = "Verification specialist for claims, citations, source credibility, and correction notes."
 model = "__STRONG_MODEL__"
 model_reasoning_effort = "high"

@@ -108,7 +108,9 @@ Codex plugin安装器不能执行任意setup脚本，因此不会在安装插件
 Use $newtype-chief to research this topic and propose an outline.
 ```
 
-Chief会从已安装的plugin缓存目录运行状态检查，并在需要时运行内置安装器，所以普通用户不需要clone仓库，也不需要记住安装命令。安装器会在Agent文件旁写入`.newtype-codex-agents.json`；以后插件升级时，Chief通过这个标记判断团队是否需要刷新。
+Chief会从已安装的plugin缓存目录运行状态检查，并在需要时运行内置安装器，所以普通用户不需要clone仓库，也不需要记住安装命令。安装器会在Agent文件旁写入`.newtype-codex-agents.json`，并同时检查插件版本和已安装Agent的schema，只有两者都正常才会判断为当前版本。
+
+Agent角色文件遵循Codex的独立custom agent schema：`name`、`description`和`developer_instructions`为必需字段，可读的界面昵称由`nickname_candidates`提供。Skill界面元数据仍可在`agents/openai.yaml`中使用`display_name`，但该字段不能写入custom agent TOML。`0.2.2`会修复旧版newtype Agent中不受支持的字段。
 
 本地开发时也可以手动运行：
 
@@ -129,7 +131,7 @@ bun run install:agents -- --project /path/to/your/project --inherit-model --forc
 bun run install:agents -- --global --inherit-model --force
 ```
 
-检查全局Agents是否与当前插件版本一致：
+检查全局Agents是否与当前插件版本和schema一致：
 
 ```bash
 bun plugins/newtype-codex/scripts/install-agents.ts --status --global
